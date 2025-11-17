@@ -1,0 +1,74 @@
+{
+  "manifest_version": 2,
+  "name": "Web Summary AI",
+  "short_name": "Web Summary AI",
+  "version": "1.0.0",
+  "description": "Web Summary AI can help you summarize or chat with websites and YouTube videos. #AI Summary #AI Summarizer #PDF Summary #Document Reader #Text Summarizer #Web Summary #Web Summarizer #Smart Reader",
+  "author": "Web Summary AI Team",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://*/*",
+    "http://*/*"
+  ],
+  
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Web Summary AI - Smart Reader & YouTube Tool",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "19": "icons/icon32.png",
+      "32": "icons/icon32.png",
+      "38": "icons/icon48.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": ["content/youtube.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  
+  "background": {
+    "scripts": ["background/background.js"],
+    "persistent": false
+  },
+  
+  "options_page": "options/options.html",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    "assets/*",
+    "content/summarize-panel.html"
+  ],
+  
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  
+  "externally_connectable": {
+    "matches": []
+  }
+}

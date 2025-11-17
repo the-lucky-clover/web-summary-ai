@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Summary AI - Settings</title>
+  <link rel="stylesheet" href="../assets/retro-color-palettes.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container options-container">
+    <header class="header options-header">
+      <div class="header-content animate-materialize animate-delay-1">
+        <div class="logo-section">
+          <img src="../icons/icon48.png" alt="Web Summary AI" class="logo animate-fade-in animate-delay-1">
+          <div>
+            <h1 class="animate-fade-in animate-delay-2">🎮 Web Summary AI</h1>
+            <p class="subtitle animate-fade-in animate-delay-3">Privacy-focused, Retro Themed</p>
+          </div>
+        </div>
+        <div class="version-info">
+          <span class="version">v1.0.0</span>
+          <div class="privacy-badge">🔒 No Data Collection</div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="navigation">
+      <button class="nav-btn active" data-section="general">General</button>
+      <button class="nav-btn" data-section="privacy">Privacy</button>
+      <button class="nav-btn" data-section="about">About</button>
+    </nav>
+
+    <main class="main-content">
+      <!-- General Settings Section -->
+      <section id="general" class="settings-section active">
+        <div class="section-header">
+          <h2>⚙️ General Settings</h2>
+          <p>Customize your summarization preferences</p>
+        </div>
+
+        <div class="settings-group">
+          <h3>Default Summary Settings</h3>
+          
+          <div class="setting-item">
+            <label for="defaultLength">Default Summary Length:</label>
+            <select id="defaultLength">
+              <option value="short">Short (2-3 sentences)</option>
+              <option value="medium">Medium (1-2 paragraphs)</option>
+              <option value="detailed">Detailed (comprehensive)</option>
+            </select>
+            <p class="setting-description">Choose the default length for generated summaries</p>
+          </div>
+
+          <div class="setting-item">
+            <label for="defaultLanguage">Default Language:</label>
+            <select id="defaultLanguage">
+              <option value="auto">Auto-detect</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+            </select>
+            <p class="setting-description">Language for summary responses</p>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Custom Prompts</h3>
+          
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="useCustomPrompts">
+              <span class="checkmark"></span>
+              Use custom summarization prompts
+            </label>
+            <p class="setting-description">Override default prompts with your own custom instructions</p>
+          </div>
+
+          <div class="setting-item" id="customPromptSettings" style="display: none;">
+            <label for="customPromptShort">Short Summary Prompt:</label>
+            <textarea id="customPromptShort" rows="3" placeholder="Enter your custom prompt for short summaries..."></textarea>
+            <p class="setting-description">Custom prompt for brief summaries (use {title} and {content} placeholders)</p>
+          </div>
+
+          <div class="setting-item" id="customPromptMediumContainer" style="display: none;">
+            <label for="customPromptMedium">Medium Summary Prompt:</label>
+            <textarea id="customPromptMedium" rows="4" placeholder="Enter your custom prompt for medium summaries..."></textarea>
+            <p class="setting-description">Custom prompt for medium-length summaries</p>
+          </div>
+
+          <div class="setting-item" id="customPromptDetailedContainer" style="display: none;">
+            <label for="customPromptDetailed">Detailed Summary Prompt:</label>
+            <textarea id="customPromptDetailed" rows="5" placeholder="Enter your custom prompt for detailed summaries..."></textarea>
+            <p class="setting-description">Custom prompt for comprehensive summaries</p>
+          </div>
+
+          <div class="setting-item" id="promptTemplatesContainer" style="display: none;">
+            <label for="promptTemplates">Quick Templates:</label>
+            <select id="promptTemplates">
+              <option value="">Choose a template...</option>
+              <option value="academic">Academic Analysis</option>
+              <option value="business">Business Summary</option>
+              <option value="news">News Digest</option>
+              <option value="technical">Technical Documentation</option>
+              <option value="creative">Creative Writing</option>
+            </select>
+            <button type="button" id="loadTemplate" class="secondary-btn">Load Template</button>
+            <p class="setting-description">Load pre-made prompt templates for different use cases</p>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Interface Options</h3>
+          
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="showFloatingButton">
+              <span class="checkmark"></span>
+              Show floating action button on pages
+            </label>
+            <p class="setting-description">Display a floating button for quick access to summarization</p>
+          </div>
+
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="contextMenu">
+              <span class="checkmark"></span>
+              Enable right-click context menu
+            </label>
+            <p class="setting-description">Add summarization options to the browser's context menu</p>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>YouTube Integration</h3>
+          
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="youtubeButton">
+              <span class="checkmark"></span>
+              Show summarize button on YouTube videos
+            </label>
+            <p class="setting-description">Add a summary button to YouTube video pages</p>
+          </div>
+
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="autoTranscript">
+              <span class="checkmark"></span>
+              Automatically extract video transcripts when available
+            </label>
+            <p class="setting-description">Attempt to get video transcripts for better summaries</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveSettings" class="primary-btn">💾 Save Settings</button>
+          <button id="resetSettings" class="secondary-btn">🔄 Reset to Defaults</button>
+        </div>
+      </section>
+
+      <!-- Privacy Section -->
+      <section id="privacy" class="settings-section">
+        <div class="section-header">
+          <h2>🔒 Privacy & Security</h2>
+          <p>Your privacy is our top priority</p>
+        </div>
+
+        <div class="privacy-features">
+          <div class="feature-card">
+            <div class="feature-icon">🚫</div>
+            <h3>No Data Collection</h3>
+            <p>This extension does not collect, store, or transmit any personal information, browsing history, or usage analytics.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3>Local Processing</h3>
+            <p>All content analysis happens locally in your browser. No data is sent to external servers for processing.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>No Analytics</h3>
+            <p>We don't use Google Analytics, tracking pixels, or any other monitoring tools that compromise your privacy.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h3>Local Storage Only</h3>
+            <p>Your settings are stored locally on your device and are never synchronized with external services.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>No External Connections</h3>
+            <p>The extension doesn't make any network requests except to AI services you explicitly choose to use.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📖</div>
+            <h3>Open Source</h3>
+            <p>Full source code is available for review. No hidden functionality or backdoors.</p>
+          </div>
+        </div>
+
+        <div class="data-info">
+          <h3>What Data Does This Extension Access?</h3>
+          <ul>
+            <li><strong>Page Content:</strong> Only when you explicitly request a summary</li>
+            <li><strong>YouTube Transcripts:</strong> Only for videos you choose to summarize</li>
+            <li><strong>Local Settings:</strong> Stored only on your device</li>
+          </ul>
+          
+          <h3>Permissions Explained</h3>
+          <ul>
+            <li><strong>activeTab:</strong> Access current page content only when you use the extension</li>
+            <li><strong>storage:</strong> Store your preferences locally on your device</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="settings-section">
+        <div class="section-header">
+          <h2>ℹ️ About</h2>
+          <p>Learn more about this extension</p>
+        </div>
+
+        <div class="about-content">
+          <div class="about-card">
+            <h3>🎯 Mission</h3>
+            <p>To provide a clean, privacy-respecting tool for content summarization without the bloat, tracking, or data collection found in other extensions.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>🛠️ How It Works</h3>
+            <p>This extension extracts text content from web pages and formats it into ready-to-use prompts for AI services. No AI processing happens within the extension itself.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>🌟 Features</h3>
+            <ul>
+              <li>Summarize any web page</li>
+              <li>YouTube video transcript extraction</li>
+              <li>Multiple summary length options</li>
+              <li>Multi-language support</li>
+              <li>Dark/light mode compatibility</li>
+              <li>Floating action button</li>
+              <li>Context menu integration</li>
+            </ul>
+          </div>
+
+          <div class="about-card">
+            <h3>🤝 Open Source</h3>
+            <p>This extension is completely open source and free. You can view, modify, and contribute to the code.</p>
+            <div class="links">
+              <a href="https://github.com/user/chatgpt-summarize-clean" target="_blank" class="link-btn">
+                📂 View Source Code
+              </a>
+              <a href="https://github.com/user/chatgpt-summarize-clean/issues" target="_blank" class="link-btn">
+                🐛 Report Issues
+              </a>
+            </div>
+          </div>
+
+          <div class="about-card">
+            <h3>📄 License</h3>
+            <p>MIT License - Free to use, modify, and distribute</p>
+          </div>
+        </div>
+
+        <div class="version-details">
+          <h3>Version Information</h3>
+          <div class="version-grid">
+            <div>Version:</div><div>1.0.0</div>
+            <div>Released:</div><div id="releaseDate">October 2024</div>
+            <div>Manifest:</div><div>V3</div>
+            <div>Browser:</div><div id="browserInfo">Chrome/Edge</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="https://github.com/user/chatgpt-summarize-clean" target="_blank">GitHub</a>
+          <a href="https://github.com/user/chatgpt-summarize-clean/blob/main/LICENSE" target="_blank">License</a>
+          <a href="https://github.com/user/chatgpt-summarize-clean/issues" target="_blank">Support</a>
+        </div>
+        <div class="footer-text">
+          <p>Made with ❤️ for privacy-conscious users</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script src="../assets/retro-theme-manager.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

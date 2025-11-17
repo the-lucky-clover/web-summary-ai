@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Summarizer AI - Settings</title>
+  <link rel="stylesheet" href="options-apple.css">
+</head>
+<body>
+  <div class="settings-container">
+    <!-- Navigation Header -->
+    <header class="settings-header">
+      <div class="header-content">
+        <div class="app-icon">
+          <svg class="sf-symbol" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M50 10 C60 10, 70 15, 75 25 C80 35, 78 45, 75 50 C72 55, 65 58, 60 60 L60 80 C60 85, 55 90, 50 90 C45 90, 40 85, 40 80 L40 60 C35 58, 28 55, 25 50 C22 45, 20 35, 25 25 C30 15, 40 10, 50 10 Z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">Web Summarizer AI</h1>
+          <p class="app-subtitle">Intelligent Content Analysis Settings</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Settings Content -->
+    <main class="settings-content">
+      <!-- General Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>General</h2>
+          <p>Configure how Web Summarizer AI behaves across all websites</p>
+        </div>
+        
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="auto-analyze">Auto-Analyze Pages</label>
+              <p class="setting-description">Automatically analyze pages when they load</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="auto-analyze" class="toggle-input">
+              <label for="auto-analyze" class="toggle-slider"></label>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="smart-detection">Smart Content Detection</label>
+              <p class="setting-description">Use Safari's Reader Mode for better content extraction</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="smart-detection" class="toggle-input" checked>
+              <label for="smart-detection" class="toggle-slider"></label>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="haptic-feedback">Haptic Feedback (iOS)</label>
+              <p class="setting-description">Enable haptic feedback for interactions</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="haptic-feedback" class="toggle-input" checked>
+              <label for="haptic-feedback" class="toggle-slider"></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analysis Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>Analysis Settings</h2>
+          <p>Customize how content is analyzed and summarized</p>
+        </div>
+        
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="summary-length">Summary Length</label>
+              <p class="setting-description">Choose how detailed your summaries should be</p>
+            </div>
+            <div class="segmented-control">
+              <input type="radio" id="length-brief" name="summary-length" value="brief">
+              <label for="length-brief">Brief</label>
+              
+              <input type="radio" id="length-balanced" name="summary-length" value="balanced" checked>
+              <label for="length-balanced">Balanced</label>
+              
+              <input type="radio" id="length-detailed" name="summary-length" value="detailed">
+              <label for="length-detailed">Detailed</label>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="focus-mode">Analysis Focus</label>
+              <p class="setting-description">What aspects to emphasize in summaries</p>
+            </div>
+            <select id="focus-mode" class="select-input">
+              <option value="general">General Overview</option>
+              <option value="key-points">Key Points Only</option>
+              <option value="action-items">Action Items</option>
+              <option value="research">Research & Facts</option>
+              <option value="creative">Creative Content</option>
+            </select>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="language-detection">Language Detection</label>
+              <p class="setting-description">Automatically detect and adapt to page language</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="language-detection" class="toggle-input" checked>
+              <label for="language-detection" class="toggle-slider"></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Privacy Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>Privacy & Data</h2>
+          <p>Control how your data is handled with privacy-first approach</p>
+        </div>
+        
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="local-storage">Local Storage Only</label>
+              <p class="setting-description">Keep all data on your device (recommended)</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="local-storage" class="toggle-input" checked disabled>
+              <label for="local-storage" class="toggle-slider"></label>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="history-limit">History Limit</label>
+              <p class="setting-description">Maximum number of summaries to keep</p>
+            </div>
+            <select id="history-limit" class="select-input">
+              <option value="25">25 summaries</option>
+              <option value="50" selected>50 summaries</option>
+              <option value="100">100 summaries</option>
+              <option value="unlimited">Unlimited</option>
+            </select>
+          </div>
+          
+          <div class="setting-item danger-item">
+            <div class="setting-info">
+              <label class="setting-label">Clear All Data</label>
+              <p class="setting-description">Permanently delete all summaries and settings</p>
+            </div>
+            <button id="clear-data" class="danger-button">
+              <svg class="sf-symbol" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M25 30 L75 30 M35 30 L35 20 C35 18, 37 16, 39 16 L61 16 C63 16, 65 18, 65 20 L65 30 M20 35 L80 35 L77 75 C77 77, 75 79, 73 79 L27 79 C25 79, 23 77, 23 75 L20 35 Z M40 45 L40 65 M50 45 L50 65 M60 45 L60 65"/>
+              </svg>
+              Clear All Data
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interface Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>Interface</h2>
+          <p>Customize the appearance and behavior of the extension</p>
+        </div>
+        
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="theme-mode">Appearance</label>
+              <p class="setting-description">Choose how the extension looks</p>
+            </div>
+            <div class="segmented-control">
+              <input type="radio" id="theme-light" name="theme-mode" value="light">
+              <label for="theme-light">Light</label>
+              
+              <input type="radio" id="theme-dark" name="theme-mode" value="dark">
+              <label for="theme-dark">Dark</label>
+              
+              <input type="radio" id="theme-system" name="theme-mode" value="system" checked>
+              <label for="theme-system">System</label>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="animation-speed">Animation Speed</label>
+              <p class="setting-description">Control interface animation speed</p>
+            </div>
+            <div class="slider-container">
+              <input type="range" id="animation-speed" class="slider-input" min="0.5" max="2" step="0.1" value="1">
+              <div class="slider-labels">
+                <span>Slow</span>
+                <span>Normal</span>
+                <span>Fast</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <label class="setting-label" for="floating-button">Floating Action Button</label>
+              <p class="setting-description">Show floating button on web pages (iOS)</p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="floating-button" class="toggle-input" checked>
+              <label for="floating-button" class="toggle-slider"></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>Keyboard Shortcuts</h2>
+          <p>Quick access with keyboard shortcuts (requires hardware keyboard)</p>
+        </div>
+        
+        <div class="shortcuts-grid">
+          <div class="shortcut-item">
+            <div class="shortcut-action">Toggle Panel</div>
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>S</kbd>
+            </div>
+          </div>
+          
+          <div class="shortcut-item">
+            <div class="shortcut-action">Analyze Page</div>
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>A</kbd>
+            </div>
+          </div>
+          
+          <div class="shortcut-item">
+            <div class="shortcut-action">Open History</div>
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>H</kbd>
+            </div>
+          </div>
+          
+          <div class="shortcut-item">
+            <div class="shortcut-action">Open Settings</div>
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd> <kbd>,</kbd>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="settings-section">
+        <div class="section-header">
+          <h2>About</h2>
+          <p>Information about Web Summarizer AI</p>
+        </div>
+        
+        <div class="about-grid">
+          <div class="about-item">
+            <div class="about-label">Version</div>
+            <div class="about-value">2.0.0</div>
+          </div>
+          
+          <div class="about-item">
+            <div class="about-label">Privacy Policy</div>
+            <a href="https://web-summary-ai.pages.dev/privacy" class="about-link">
+              View Policy
+              <svg class="sf-symbol" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M40 30 L70 50 L40 70" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </a>
+          </div>
+          
+          <div class="about-item">
+            <div class="about-label">Support</div>
+            <a href="https://web-summary-ai.pages.dev/support" class="about-link">
+              Get Help
+              <svg class="sf-symbol" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M40 30 L70 50 L40 70" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </a>
+          </div>
+          
+          <div class="about-item">
+            <div class="about-label">Web App</div>
+            <a href="https://web-summary-ai.pages.dev" class="about-link">
+              Open Web Version
+              <svg class="sf-symbol" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M40 30 L70 50 L40 70" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="settings-footer">
+      <p>&copy; 2025 Web Summarizer AI. Privacy-first intelligent content analysis.</p>
+      <div class="footer-links">
+        <a href="https://web-summary-ai.pages.dev/privacy">Privacy</a>
+        <a href="https://web-summary-ai.pages.dev/terms">Terms</a>
+        <a href="https://web-summary-ai.pages.dev/support">Support</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="options-apple.js"></script>
+</body>
+</html>

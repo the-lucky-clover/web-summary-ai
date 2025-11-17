@@ -1,0 +1,104 @@
+{
+  "manifest_version": 2,
+  "name": "Web Summarizer AI",
+  "short_name": "Web Summarizer AI",
+  "version": "2.0.0",
+  "description": "Intelligent content summarization for Safari with native Apple design integration. Privacy-focused AI analysis for web pages and articles.",
+  "author": "Web Summarizer AI Team",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://*/*",
+    "http://*/*",
+    "notifications"
+  ],
+  
+  "browser_action": {
+    "default_popup": "popup/popup-apple.html",
+    "default_title": "Web Summarizer AI - Intelligent Analysis",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "19": "icons/icon32.png",
+      "32": "icons/icon32.png",
+      "38": "icons/icon48.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/content-ios.js"],
+      "css": ["content/content-ios.css"],
+      "run_at": "document_end",
+      "all_frames": false
+    },
+    {
+      "matches": ["*://www.youtube.com/*", "*://youtube.com/*", "*://m.youtube.com/*"],
+      "js": ["content/content-ios.js", "content/youtube.js"],
+      "css": ["content/content-ios.css"],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  
+  "background": {
+    "scripts": ["background/background.js"],
+    "persistent": false
+  },
+  
+  "options_page": "options/options.html",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "96": "icons/icon96.png",
+    "128": "icons/icon128.png",
+    "256": "icons/icon256.png",
+    "512": "icons/icon512.png"
+  },
+  
+  "web_accessible_resources": [
+    "assets/*.css",
+    "assets/*.js",
+    "icons/*.png",
+    "content/content-ios.css",
+    "content/content-ios.js"
+  ],
+  
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  
+  "externally_connectable": {
+    "matches": ["https://web-summary-ai.pages.dev/*"]
+  },
+  
+  "commands": {
+    "toggle-summarizer": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Toggle Web Summarizer panel"
+    },
+    "analyze-page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Analyze current page"
+    }
+  },
+  
+  "homepage_url": "https://web-summary-ai.pages.dev",
+  
+  "minimum_chrome_version": "88",
+  
+  "offline_enabled": true,
+  
+  "omnibox": {
+    "keyword": "summarize"
+  }
+}

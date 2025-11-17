@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Summarizer AI - Retro Theme Demo</title>
+    <link rel="stylesheet" href="../assets/retro-color-palettes.css">
+    <style>
+        body {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin: 20px 0;
+        }
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-section">
+        <!-- Wildstyle Logo -->
+        <div class="wildstyle-logo-container">
+            <div class="wildstyle-logo">██╗    ██╗███████╗██████╗     ███████╗██╗   ██╗███╗   ███╗███╗   ███╗ █████╗ ██████╗ ██╗███████╗███████╗██████╗     █████╗ ██╗</div>
+        </div>
+        
+        <h1 class="animate-fade-in animate-delay-1">🎮 Web Summarizer AI Demo</h1>
+        <p class="retro-text animate-fade-in animate-delay-2">Experience the retro green theme system</p>
+        
+        <!-- Theme Selector -->
+        <div class="retro-panel animate-materialize animate-delay-3">
+            <h3>🎨 Theme Control</h3>
+            <label class="retro-label">Choose Theme:</label>
+            <div id="themeSelector"></div>
+        </div>
+        
+        <!-- Buttons Demo -->
+        <div class="retro-panel animate-slide-up animate-delay-4">
+            <h3>🎮 Retro Buttons</h3>
+            <div class="demo-buttons">
+                <button class="retro-button animate-delay-1">📄 Summarize</button>
+                <button class="retro-button animate-delay-2">🔍 Analyze</button>
+                <button class="retro-button animate-delay-3">🤖 AI Process</button>
+                <button class="retro-button animate-delay-4">📋 Copy</button>
+            </div>
+        </div>
+        
+        <!-- Form Controls Demo -->
+        <div class="retro-panel animate-materialize animate-delay-5">
+            <h3>⚙️ Form Controls</h3>
+            <div style="margin: 10px 0;">
+                <label class="retro-label">Summary Length:</label>
+                <select class="retro-select">
+                    <option>Short</option>
+                    <option selected>Medium</option>
+                    <option>Detailed</option>
+                </select>
+            </div>
+            <div style="margin: 10px 0;">
+                <label class="retro-label">
+                    <input type="checkbox" class="retro-checkbox" checked> Auto-summarize pages
+                </label>
+            </div>
+            <div style="margin: 10px 0;">
+                <label class="retro-label">Custom prompt:</label>
+                <input type="text" class="retro-input" placeholder="Enter your AI prompt..." />
+            </div>
+        </div>
+        
+        <!-- Animation Demo -->
+        <div class="retro-panel animate-slide-up animate-delay-6">
+            <h3>✨ Animation System</h3>
+            <p class="retro-text-secondary">All elements use Framer Motion inspired animations:</p>
+            <ul class="retro-text">
+                <li>Fade-in with scale-up materialization</li>
+                <li>Slide-up animations for panels</li>
+                <li>Staggered animation delays</li>
+                <li>Smooth scrolling wildstyle logo</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../assets/retro-theme-manager.js"></script>
+    <script>
+        // Demo initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add theme selector to demo
+            const themeContainer = document.getElementById('themeSelector');
+            if (window.gameBoyTheme && themeContainer) {
+                const selector = window.gameBoyTheme.createThemeSelector();
+                themeContainer.appendChild(selector);
+            }
+            
+            // Add click handlers for demo buttons
+            document.querySelectorAll('.retro-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const originalText = button.textContent;
+                    button.textContent = '✓ Done!';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

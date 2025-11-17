@@ -1,0 +1,26 @@
+{
+  "name": "web-summary-ai",
+  "version": "1.0.0",
+  "description": "Web Summarizer AI - Smart Reader & YouTube Tool. Privacy-focused web extension for summarizing content with AI.",
+  "main": "test-extension.js",
+  "scripts": {
+    "test": "node test-extension.js"
+  },
+  "keywords": [
+    "web-summarizer",
+    "AI-summary",
+    "smart-reader",
+    "youtube-tool",
+    "web-extension",
+    "privacy-focused",
+    "summarization",
+    "content-reader",
+    "article-summarizer"
+  ],
+  "author": "Web Summarizer AI Team",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^5.1.0",
+    "puppeteer": "^24.30.0"
+  }
+}

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History - Web Summarizer AI</title>
+  <link rel="stylesheet" href="../assets/retro-color-palettes.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--light-bg-primary);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      color: var(--light-text-primary);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--light-border);
+    }
+
+    .header h1 {
+      color: var(--light-text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .stats-card {
+      background: var(--light-bg-secondary);
+      border: 2px solid var(--light-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px var(--light-shadow);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--light-accent);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--light-text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--light-border);
+      border-radius: 6px;
+      background: var(--light-bg-primary);
+      color: var(--light-text-primary);
+      font-size: 1rem;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--light-accent);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .retro-button {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--light-border);
+      border-radius: 6px;
+      background: var(--light-button-bg);
+      color: var(--light-text-primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .retro-button:hover {
+      background: var(--light-button-hover);
+      transform: translateY(-1px);
+    }
+
+    .retro-button:active {
+      background: var(--light-button-active);
+      transform: translateY(0);
+    }
+
+    .retro-button.danger {
+      background: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+
+    .retro-button.danger:hover {
+      background: #c82333;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .history-entry {
+      background: var(--light-bg-secondary);
+      border: 2px solid var(--light-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px var(--light-shadow);
+    }
+
+    .entry-header {
+      background: var(--light-accent);
+      color: var(--light-text-primary);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .entry-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .entry-meta {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .entry-actions button {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.2);
+      color: var(--light-text-primary);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .entry-actions button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .entry-content {
+      padding: 1rem;
+    }
+
+    .entry-url {
+      color: var(--light-text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .entry-url a {
+      color: var(--light-accent);
+      text-decoration: none;
+    }
+
+    .entry-summary {
+      background: var(--light-bg-primary);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      border-left: 4px solid var(--light-accent);
+    }
+
+    .entry-content-preview {
+      font-style: italic;
+      color: var(--light-text-secondary);
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--light-text-secondary);
+    }
+
+    .empty-state h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn-group {
+        justify-content: center;
+      }
+      
+      .entry-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .entry-actions {
+        align-self: flex-end;
+      }
+    }
+
+    /* Dark theme support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: var(--dark-bg-primary);
+        color: var(--dark-text-primary);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header animate-fade-in">
+      <h1>📚 Summary History</h1>
+      <p>Your local summarization history and statistics</p>
+    </div>
+
+    <div class="stats-card animate-materialize animate-delay-1">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-item">
+          <div class="stat-value" id="totalEntries">-</div>
+          <div class="stat-label">Total Summaries</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="totalSize">-</div>
+          <div class="stat-label">Storage Used</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="lastCleared">-</div>
+          <div class="stat-label">Last Cleared</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="dateRange">-</div>
+          <div class="stat-label">Date Range</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls animate-slide-up animate-delay-2">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search summaries..." />
+      </div>
+      <div class="btn-group">
+        <button class="retro-button" onclick="exportHistory('json')">
+          📄 Export JSON
+        </button>
+        <button class="retro-button" onclick="exportHistory('csv')">
+          📊 Export CSV
+        </button>
+        <button class="retro-button" onclick="exportHistory('html')">
+          🌐 Export HTML
+        </button>
+        <button class="retro-button" onclick="exportHistory('markdown')">
+          📝 Export Markdown
+        </button>
+        <button class="retro-button danger" onclick="clearHistory()">
+          🗑️ Clear History
+        </button>
+      </div>
+    </div>
+
+    <div id="historyContainer">
+      <div class="empty-state" id="emptyState">
+        <h3>No summaries yet</h3>
+        <p>Start summarizing web pages to build your history!</p>
+      </div>
+      <div class="history-list" id="historyList" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script src="../assets/retro-theme-manager.js"></script>
+  <script src="../assets/history-manager.js"></script>
+  <script>
+    // Initialize components
+    let historyManager;
+    let retro;
+    let filteredEntries = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize theme manager
+      retro = new RetroThemeManager();
+      
+      // Initialize history manager
+      historyManager = new HistoryManager();
+      
+      // Load and display history
+      loadHistory();
+      
+      // Set up search
+      setupSearch();
+    });
+
+    function loadHistory() {
+      const stats = historyManager.getStats();
+      const entries = historyManager.getEntries();
+      
+      // Update statistics
+      updateStats(stats);
+      
+      // Display entries
+      displayEntries(entries);
+      
+      // Store for filtering
+      filteredEntries = entries;
+    }
+
+    function updateStats(stats) {
+      if (!stats) {
+        document.getElementById('totalEntries').textContent = '0';
+        document.getElementById('totalSize').textContent = '0 B';
+        document.getElementById('lastCleared').textContent = 'Never';
+        document.getElementById('dateRange').textContent = 'N/A';
+        return;
+      }
+
+      document.getElementById('totalEntries').textContent = stats.totalEntries;
+      document.getElementById('totalSize').textContent = stats.totalSizeFormatted;
+      document.getElementById('lastCleared').textContent = formatRelativeTime(stats.lastCleared);
+      
+      if (stats.oldestEntry && stats.newestEntry) {
+        const oldest = new Date(stats.oldestEntry);
+        const newest = new Date(stats.newestEntry);
+        const range = oldest.getTime() === newest.getTime() 
+          ? formatRelativeTime(stats.newestEntry)
+          : `${formatRelativeTime(stats.oldestEntry)} - ${formatRelativeTime(stats.newestEntry)}`;
+        document.getElementById('dateRange').textContent = range;
+      } else {
+        document.getElementById('dateRange').textContent = 'N/A';
+      }
+    }
+
+    function displayEntries(entries) {
+      const container = document.getElementById('historyContainer');
+      const emptyState = document.getElementById('emptyState');
+      const historyList = document.getElementById('historyList');
+
+      if (!entries || entries.length === 0) {
+        emptyState.style.display = 'block';
+        historyList.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      historyList.style.display = 'block';
+      
+      historyList.innerHTML = entries.map(entry => `
+        <div class="history-entry animate-fade-in" data-entry-id="${entry.id}">
+          <div class="entry-header">
+            <div>
+              <div class="entry-title">${escapeHtml(entry.title)}</div>
+              <div class="entry-meta">
+                <span>📅 ${formatRelativeTime(entry.timestamp)}</span>
+                <span>📏 ${entry.length}</span>
+                <span>🌐 ${entry.language}</span>
+                <span>📊 ${historyManager.formatFileSize(entry.size)}</span>
+              </div>
+            </div>
+            <div class="entry-actions">
+              <button onclick="copyEntry('${entry.id}')" title="Copy Summary">📋</button>
+              <button onclick="deleteEntry('${entry.id}')" title="Delete Entry">🗑️</button>
+            </div>
+          </div>
+          <div class="entry-content">
+            <div class="entry-url">
+              🔗 <a href="${entry.url}" target="_blank">${entry.url}</a>
+            </div>
+            ${entry.summary ? `
+              <div class="entry-summary">
+                <strong>Summary:</strong><br>
+                ${escapeHtml(entry.summary)}
+              </div>
+            ` : ''}
+            ${entry.content ? `
+              <div class="entry-content-preview">
+                <strong>Content Preview:</strong><br>
+                ${escapeHtml(entry.content.substring(0, 200))}${entry.content.length > 200 ? '...' : ''}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+          displayEntries(historyManager.getEntries());
+          return;
+        }
+
+        const filtered = historyManager.getEntries().filter(entry => 
+          entry.title.toLowerCase().includes(query) ||
+          entry.url.toLowerCase().includes(query) ||
+          (entry.summary && entry.summary.toLowerCase().includes(query)) ||
+          (entry.content && entry.content.toLowerCase().includes(query))
+        );
+
+        displayEntries(filtered);
+      });
+    }
+
+    function exportHistory(format) {
+      try {
+        historyManager.downloadExport(format);
+      } catch (error) {
+        console.error('Export failed:', error);
+        alert('Export failed. Please try again.');
+      }
+    }
+
+    function clearHistory() {
+      if (!confirm('Are you sure you want to clear all history? This action cannot be undone.')) {
+        return;
+      }
+
+      historyManager.clearHistory();
+      loadHistory();
+      
+      // Show success message
+      const notification = document.createElement('div');
+      notification.textContent = '✅ History cleared successfully';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--light-accent);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    function deleteEntry(entryId) {
+      if (!confirm('Delete this summary?')) return;
+      
+      historyManager.deleteEntry(entryId);
+      loadHistory();
+    }
+
+    function copyEntry(entryId) {
+      const entries = historyManager.getEntries();
+      const entry = entries.find(e => e.id === entryId);
+      
+      if (!entry || !entry.summary) {
+        alert('No summary to copy');
+        return;
+      }
+
+      navigator.clipboard.writeText(entry.summary).then(() => {
+        // Show copied notification
+        const button = document.querySelector(`[data-entry-id="${entryId}"] button[title="Copy Summary"]`);
+        const originalText = button.textContent;
+        button.textContent = '✅';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1000);
+      }).catch(() => {
+        alert('Failed to copy to clipboard');
+      });
+    }
+
+    // Helper functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatRelativeTime(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+      return `${Math.floor(diffDays / 365)} years ago`;
+    }
+  </script>
+</body>
+</html>

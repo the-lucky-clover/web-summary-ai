@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Summarizer AI - Debug Console</title>
+    <style>
+        :root {
+            --apple-blue: #007AFF;
+            --apple-green: #34C759;
+            --apple-orange: #FF9500;
+            --apple-red: #FF3B30;
+            --system-background: #FFFFFF;
+            --system-secondary-background: #F2F2F7;
+            --label-primary: #000000;
+            --label-secondary: rgba(60, 60, 67, 0.6);
+            --separator: rgba(60, 60, 67, 0.29);
+            --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --system-background: #000000;
+                --system-secondary-background: #1C1C1E;
+                --label-primary: #FFFFFF;
+                --label-secondary: rgba(235, 235, 245, 0.6);
+                --separator: rgba(84, 84, 88, 0.65);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--system-background);
+            color: var(--label-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .debug-header {
+            padding: 20px;
+            background: var(--system-secondary-background);
+            border-bottom: 1px solid var(--separator);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .debug-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--label-primary);
+        }
+
+        .debug-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .debug-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--apple-blue);
+            color: white;
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .debug-button:hover {
+            background: #0056CC;
+        }
+
+        .debug-button.secondary {
+            background: var(--system-secondary-background);
+            color: var(--apple-blue);
+            border: 1px solid var(--separator);
+        }
+
+        .debug-button.danger {
+            background: var(--apple-red);
+        }
+
+        .debug-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .debug-sidebar {
+            width: 300px;
+            background: var(--system-secondary-background);
+            border-right: 1px solid var(--separator);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--separator);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--label-primary);
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--label-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(120, 120, 128, 0.16);
+            color: var(--label-primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--apple-blue);
+            color: white;
+        }
+
+        .debug-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expression-input-container {
+            padding: 16px;
+            background: var(--system-background);
+            border-bottom: 1px solid var(--separator);
+        }
+
+        .expression-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--separator);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: var(--system-secondary-background);
+            color: var(--label-primary);
+            resize: none;
+            min-height: 60px;
+        }
+
+        .expression-input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+
+        .console-output {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--system-background);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .console-entry {
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid transparent;
+        }
+
+        .console-entry.input {
+            background: var(--system-secondary-background);
+            border-left-color: var(--apple-blue);
+        }
+
+        .console-entry.output {
+            background: rgba(52, 199, 89, 0.1);
+            border-left-color: var(--apple-green);
+        }
+
+        .console-entry.error {
+            background: rgba(255, 59, 48, 0.1);
+            border-left-color: var(--apple-red);
+            color: var(--apple-red);
+        }
+
+        .console-entry.warning {
+            background: rgba(255, 149, 0, 0.1);
+            border-left-color: var(--apple-orange);
+            color: var(--apple-orange);
+        }
+
+        .console-timestamp {
+            font-size: 11px;
+            color: var(--label-secondary);
+            margin-bottom: 4px;
+        }
+
+        .console-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .extension-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--system-secondary-background);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--apple-green);
+        }
+
+        .status-indicator.disconnected {
+            background: var(--apple-red);
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--label-primary);
+        }
+
+        .debug-tabs {
+            display: flex;
+            background: var(--system-secondary-background);
+            border-bottom: 1px solid var(--separator);
+        }
+
+        .debug-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            font-family: var(--font-family);
+            font-size: 14px;
+            color: var(--label-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .debug-tab.active {
+            color: var(--apple-blue);
+            background: var(--system-background);
+            border-bottom: 2px solid var(--apple-blue);
+        }
+
+        .debug-tab:hover:not(.active) {
+            color: var(--label-primary);
+        }
+
+        .inspector-panel {
+            padding: 16px;
+            display: none;
+        }
+
+        .inspector-panel.active {
+            display: block;
+        }
+
+        .inspector-tree {
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .tree-item {
+            padding: 2px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tree-item:hover {
+            background: rgba(120, 120, 128, 0.16);
+        }
+
+        .tree-expandable::before {
+            content: "▶";
+            display: inline-block;
+            width: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .tree-expandable.expanded::before {
+            transform: rotate(90deg);
+        }
+
+        .tree-value {
+            color: var(--apple-blue);
+        }
+
+        .tree-string {
+            color: var(--apple-green);
+        }
+
+        .tree-number {
+            color: var(--apple-orange);
+        }
+
+        .tree-boolean {
+            color: var(--apple-red);
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-header">
+        <h1 class="debug-title">Web Summarizer AI - Debug Console</h1>
+        <div class="debug-controls">
+            <button class="debug-button secondary" onclick="clearConsole()">Clear</button>
+            <button class="debug-button" onclick="runTests()">Run Tests</button>
+            <button class="debug-button danger" onclick="resetExtension()">Reset</button>
+        </div>
+    </div>
+
+    <div class="debug-content">
+        <div class="debug-sidebar">
+            <div class="sidebar-section">
+                <div class="extension-status">
+                    <div class="status-indicator" id="status-indicator"></div>
+                    <div class="status-text" id="status-text">Connecting...</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Extension Components</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item active" onclick="selectComponent('popup')" data-component="popup">Popup</li>
+                    <li class="sidebar-item" onclick="selectComponent('content')" data-component="content">Content Script</li>
+                    <li class="sidebar-item" onclick="selectComponent('background')" data-component="background">Background</li>
+                    <li class="sidebar-item" onclick="selectComponent('options')" data-component="options">Options</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Actions</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item" onclick="testPopupAPI()">Test Popup API</li>
+                    <li class="sidebar-item" onclick="testContentScript()">Test Content Script</li>
+                    <li class="sidebar-item" onclick="testStorage()">Test Storage</li>
+                    <li class="sidebar-item" onclick="testNotifications()">Test Notifications</li>
+                    <li class="sidebar-item" onclick="inspectCurrentTab()">Inspect Current Tab</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Debug Tools</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item" onclick="enableVerboseLogging()">Verbose Logging</li>
+                    <li class="sidebar-item" onclick="exportDebugData()">Export Debug Data</li>
+                    <li class="sidebar-item" onclick="simulateError()">Simulate Error</li>
+                    <li class="sidebar-item" onclick="performanceProfile()">Performance Profile</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="debug-main">
+            <div class="debug-tabs">
+                <button class="debug-tab active" onclick="switchTab('console')">Console</button>
+                <button class="debug-tab" onclick="switchTab('inspector')">Inspector</button>
+                <button class="debug-tab" onclick="switchTab('network')">Network</button>
+                <button class="debug-tab" onclick="switchTab('storage')">Storage</button>
+            </div>
+
+            <div class="expression-input-container">
+                <textarea 
+                    class="expression-input" 
+                    id="expression-input" 
+                    placeholder="Enter JavaScript expression to evaluate (e.g., browser.tabs.query({active: true}))"
+                    onkeydown="handleKeydown(event)"></textarea>
+            </div>
+
+            <div class="inspector-panel active" id="console-panel">
+                <div class="console-output" id="console-output">
+                    <div class="console-entry output">
+                        <div class="console-timestamp">${new Date().toLocaleTimeString()}</div>
+                        <div class="console-content">Web Summarizer AI Debug Console initialized
+Extension debugging session started
+Type JavaScript expressions above and press Cmd+Enter to evaluate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inspector-panel" id="inspector-panel">
+                <div class="inspector-tree" id="inspector-tree">
+                    <div class="tree-item">Loading inspector data...</div>
+                </div>
+            </div>
+
+            <div class="inspector-panel" id="network-panel">
+                <div class="console-output">
+                    <div class="console-entry">
+                        <div class="console-timestamp">${new Date().toLocaleTimeString()}</div>
+                        <div class="console-content">Network monitoring will appear here...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inspector-panel" id="storage-panel">
+                <div class="inspector-tree" id="storage-tree">
+                    <div class="tree-item">Loading storage data...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="debug-console.js"></script>
+</body>
+</html>

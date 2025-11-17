@@ -1,0 +1,22 @@
+{
+  "name": "web-summary-ai-safari",
+  "version": "1.0.0",
+  "description": "Web Summarizer AI Safari Extension - Smart Reader & YouTube Tool for macOS and iOS Safari.",
+  "main": "test-extension.js",
+  "scripts": {
+    "test": "node test-extension.js"
+  },
+  "keywords": [
+    "safari-extension",
+    "web-summarizer",
+    "AI-summary",
+    "smart-reader",
+    "youtube-tool",
+    "macos-safari",
+    "ios-safari",
+    "privacy-focused",
+    "summarization"
+  ],
+  "author": "Web Summarizer AI Team",
+  "license": "MIT"
+}

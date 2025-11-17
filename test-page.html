@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Summary AI Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #1a73e8; }
+        .content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .test-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Web Summary AI Extension Test Page</h1>
+    
+    <div class="test-info">
+        <h2>Testing Instructions:</h2>
+        <ol>
+            <li>Look for the floating Σ button in the bottom-right corner</li>
+            <li>Open the browser console (F12) to see extension logs</li>
+            <li>Click the floating button to test summary generation</li>
+            <li>Check for any console errors</li>
+        </ol>
+    </div>
+
+    <div class="content">
+        <h2>Sample Article Content</h2>
+        <p>
+            This is a test article to verify that the Web Summary AI extension can properly
+            extract and summarize content from web pages. The extension should detect this
+            text and be ready to generate a summary when the floating button is clicked.
+        </p>
+        <p>
+            Web Summary AI is a privacy-focused browser extension that helps users quickly
+            understand web content without sharing data with external services. It uses
+            local processing to generate prompts that can be copied to AI services like
+            ChatGPT, Claude, or Gemini.
+        </p>
+        <p>
+            Key features include YouTube transcript integration, retro-themed UI with
+            customizable colors, and support for multiple summarization styles. The extension
+            maintains complete privacy by never making external API calls or tracking user
+            behavior.
+        </p>
+    </div>
+
+    <div class="content">
+        <h2>Additional Test Content</h2>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+    </div>
+
+    <script>
+        console.log('✅ Test page loaded successfully');
+        
+        // Wait a moment then check if extension loaded
+        setTimeout(() => {
+            const fab = document.querySelector('.web-summary-fab');
+            const webSummaryAI = typeof WebSummaryAI !== 'undefined';
+            const historyManager = typeof HistoryManager !== 'undefined';
+            
+            console.log('🔍 Extension Status Check:');
+            console.log('  - Floating button found:', !!fab);
+            console.log('  - WebSummaryAI class loaded:', webSummaryAI);
+            console.log('  - HistoryManager class loaded:', historyManager);
+            
+            if (!fab) {
+                console.warn('⚠️  Floating button not found - extension may not be loaded');
+            } else {
+                console.log('✅ Extension appears to be working!');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+/* 
+ * Web Summarizer AI - Retro Color Palette System
+ * Classic 8-bit Green Monochrome Retro Themes
+ * Date: November 6, 2025
+ */
+
+:root {
+  /* Classic Retro Green Monochrome */
+  --retro-green-darkest: #0f380f;
+  --retro-green-dark: #306230;
+  --retro-green-light: #8bac0f;
+  --retro-green-lightest: #9bbc0f;
+  --retro-screen-green: #8bac0f;
+  
+  /* Retro Green - Light Mode (Classic Green) */
+  --light-bg-primary: #c7d5c7;
+  --light-bg-secondary: #9bbc0f;
+  --light-bg-tertiary: #8bac0f;
+  --light-text-primary: #0f380f;
+  --light-text-secondary: #306230;
+  --light-accent: #8bac0f;
+  --light-border: #306230;
+  --light-shadow: rgba(15, 56, 15, 0.3);
+  --light-button-bg: #9bbc0f;
+  --light-button-hover: #8bac0f;
+  --light-button-active: #306230;
+  
+  /* Retro Green - Dark Mode (Inverted Retro) */
+  --dark-bg-primary: #0f380f;
+  --dark-bg-secondary: #1a4a1a;
+  --dark-bg-tertiary: #306230;
+  --dark-text-primary: #c7d5c7;
+  --dark-text-secondary: #9bbc0f;
+  --dark-accent: #8bac0f;
+  --dark-border: #8bac0f;
+  --dark-shadow: rgba(139, 172, 15, 0.3);
+  --dark-button-bg: #306230;
+  --dark-button-hover: #8bac0f;
+  --dark-button-active: #9bbc0f;
+  
+  /* Animated Wildstyle Logo Colors */
+  --logo-primary: #0f380f;
+  --logo-secondary: #306230;
+  --logo-tertiary: #8bac0f;
+  --logo-quaternary: #9bbc0f;
+  --logo-highlight: #c7d5c7;
+  
+  /* Animation Properties */
+  --fade-duration: 0.8s;
+  --scale-duration: 0.6s;
+  --scroll-duration: 12s;
+  --stagger-delay: 0.1s;
+}
+
+/* Light Theme (Default) */
+[data-theme="light"] {
+  --bg-primary: var(--light-bg-primary);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --accent: var(--light-accent);
+  --border: var(--light-border);
+  --shadow: var(--light-shadow);
+  --button-bg: var(--light-button-bg);
+  --button-hover: var(--light-button-hover);
+  --button-active: var(--light-button-active);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --accent: var(--dark-accent);
+  --border: var(--dark-border);
+  --shadow: var(--dark-shadow);
+  --button-bg: var(--dark-button-bg);
+  --button-hover: var(--dark-button-hover);
+  --button-active: var(--dark-button-active);
+}
+
+/* System Theme (Auto-detect) */
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --bg-tertiary: var(--dark-bg-tertiary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --accent: var(--dark-accent);
+    --border: var(--dark-border);
+    --shadow: var(--dark-shadow);
+    --button-bg: var(--dark-button-bg);
+    --button-hover: var(--dark-button-hover);
+    --button-active: var(--dark-button-active);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] {
+    --bg-primary: var(--light-bg-primary);
+    --bg-secondary: var(--light-bg-secondary);
+    --bg-tertiary: var(--light-bg-tertiary);
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --accent: var(--light-accent);
+    --border: var(--light-border);
+    --shadow: var(--light-shadow);
+    --button-bg: var(--light-button-bg);
+    --button-hover: var(--light-button-hover);
+    --button-active: var(--light-button-active);
+  }
+}
+
+/* Base Retro Styling */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Wildstyle Animated Logo */
+.wildstyle-logo {
+  font-family: 'Courier New', monospace;
+  font-size: clamp(8px, 1vw, 12px);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--logo-primary);
+  text-shadow: 
+    1px 1px 0 var(--logo-secondary),
+    2px 2px 0 var(--logo-tertiary),
+    3px 3px 0 var(--logo-quaternary);
+  animation: 
+    fadeInScale var(--fade-duration) ease-out,
+    horizontalScroll var(--scroll-duration) linear infinite;
+  animation-delay: 0.2s;
+  animation-fill-mode: both;
+}
+
+.wildstyle-logo-container {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-tertiary) 50%, 
+    var(--bg-secondary) 100%);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 10px 0;
+  box-shadow: 
+    inset 2px 2px 4px var(--shadow),
+    2px 2px 8px var(--shadow);
+}
+
+/* Framer Motion Inspired Animations */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes horizontalScroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes materialize {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.95) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Component Animations */
+.animate-materialize {
+  animation: materialize var(--fade-duration) ease-out both;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--scale-duration) ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeInScale var(--fade-duration) ease-out both;
+}
+
+/* Staggered Animation Delays */
+.animate-delay-1 { animation-delay: calc(var(--stagger-delay) * 1); }
+.animate-delay-2 { animation-delay: calc(var(--stagger-delay) * 2); }
+.animate-delay-3 { animation-delay: calc(var(--stagger-delay) * 3); }
+.animate-delay-4 { animation-delay: calc(var(--stagger-delay) * 4); }
+.animate-delay-5 { animation-delay: calc(var(--stagger-delay) * 5); }
+.animate-delay-6 { animation-delay: calc(var(--stagger-delay) * 6); }
+
+/* Retro Button Styling */
+.retro-button {
+  background-color: var(--button-bg);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 4px var(--shadow);
+  animation: materialize var(--fade-duration) ease-out both;
+}
+
+.retro-button:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 2px 4px 8px var(--shadow);
+}
+
+.retro-button:active {
+  background-color: var(--button-active);
+  transform: translateY(0);
+  box-shadow: 1px 1px 2px var(--shadow);
+}
+
+/* Theme Selector */
+.theme-selector {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  animation: slideUp var(--scale-duration) ease-out both;
+}
+
+.theme-option {
+  padding: 6px 12px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.theme-option:hover {
+  background-color: var(--button-hover);
+}
+
+.theme-option.active {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+/* Retro Color Form Controls */
+.retro-select, .retro-input {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  animation: materialize var(--fade-duration) ease-out both;
+}
+
+.retro-select:focus, .retro-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 5px var(--accent);
+}
+
+.retro-select option {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 4px;
+}
+
+/* Retro Color Panel Styling */
+.retro-panel {
+  background-color: var(--bg-primary);
+  border: 3px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: 
+    inset 2px 2px 4px var(--bg-tertiary),
+    4px 4px 8px var(--shadow);
+  animation: slideUp var(--scale-duration) ease-out both;
+}
+
+.retro-panel h3 {
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+/* Retro Color Labels */
+.retro-label {
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Retro Color Checkbox */
+.retro-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-radius: 2px;
+  background-color: var(--bg-tertiary);
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.retro-checkbox:checked {
+  background-color: var(--accent);
+}
+
+.retro-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 1px;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+/* Retro Color Text */
+.retro-text {
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+.retro-text-secondary {
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wildstyle-logo {
+    font-size: clamp(6px, 2vw, 10px);
+  }
+  
+  .wildstyle-logo-container {
+    padding: 6px;
+    margin: 8px 0;
+  }
+  
+  .retro-button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wildstyle-logo {
+    font-size: clamp(4px, 3vw, 8px);
+  }
+  
+  .theme-selector {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .retro-panel {
+    padding: 12px;
+    margin: 8px 0;
+  }
+}

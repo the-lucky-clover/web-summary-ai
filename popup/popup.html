@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Summary AI</title>
+  <link rel="stylesheet" href="../assets/retro-color-palettes.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container extension-popup">
+    <!-- Wildstyle Logo will be inserted here by theme manager -->
+    <div class="header popup-header">
+      <img src="../icons/icon48.png" alt="Web Summary AI" class="logo animate-materialize animate-delay-1">
+      <h1 class="animate-fade-in animate-delay-2">Web Summary AI</h1>
+      <span class="version animate-fade-in animate-delay-3">v1.0.0</span>
+    </div>
+    
+    <div class="content">
+      <div class="status-section">
+        <div class="status" id="status">
+          <span class="status-indicator" id="statusIndicator"></span>
+          <span id="statusText">Ready</span>
+        </div>
+      </div>
+      
+      <div class="actions animate-materialize animate-delay-4">
+        <button id="summarizeBtn" class="primary-btn retro-button">
+          <span class="btn-icon">📄</span>
+          Summarize Current Page
+        </button>
+        
+        <button id="openPanelBtn" class="secondary-btn retro-button">
+          <span class="btn-icon">🔍</span>
+          Open Summary Panel
+        </button>
+      </div>
+      
+      <div class="options-section animate-slide-up animate-delay-5">
+        <div class="option-item">
+          <label for="summaryLength">Summary Length:</label>
+          <select id="summaryLength" class="retro-select">
+            <option value="short">Short</option>
+            <option value="medium" selected>Medium</option>
+            <option value="detailed">Detailed</option>
+          </select>
+        </div>
+        
+        <div class="field animate-slide-up animate-delay-7">
+          <label for="language" class="field-label">Language</label>
+          <select id="language" class="retro-select">
+            <option value="auto">Auto-detect</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="zh">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+          </select>
+        </div>
+        
+        <div class="option-item">
+          <label for="theme">Theme:</label>
+          <div id="themeSelector" class="theme-selector-container">
+            <!-- Theme selector will be inserted here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer animate-fade-in animate-delay-6">
+        <div class="links">
+          <button id="historyBtn" class="link-btn retro-button">📚 History</button>
+          <button id="optionsBtn" class="link-btn retro-button">Settings</button>
+          <button id="aboutBtn" class="link-btn retro-button">About</button>
+          <a href="https://github.com/user/web-summary-ai" target="_blank" class="link-btn retro-button">GitHub</a>
+        </div>
+        <div class="privacy-notice">
+          <small>🔒 Privacy-focused • No data collection • Open source</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="../assets/retro-theme-manager.js"></script>
+  <script src="../assets/history-manager.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

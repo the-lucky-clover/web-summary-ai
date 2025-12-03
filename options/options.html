@@ -40,6 +40,35 @@
         </div>
 
         <div class="settings-group">
+          <h3>AI Integration</h3>
+          
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="enableAI">
+              <span class="checkmark"></span>
+              Enable automatic AI summary generation
+            </label>
+            <p class="setting-description">When enabled, summaries will be generated automatically using OpenAI's API instead of showing the prompt</p>
+          </div>
+
+          <div class="setting-item" id="aiSettings" style="display: none;">
+            <label for="openaiApiKey">OpenAI API Key:</label>
+            <input type="password" id="openaiApiKey" placeholder="sk-...">
+            <p class="setting-description">Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a></p>
+          </div>
+
+          <div class="setting-item" id="aiModelContainer" style="display: none;">
+            <label for="aiModel">AI Model:</label>
+            <select id="aiModel">
+              <option value="gpt-4o-mini">GPT-4o Mini (Recommended)</option>
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+            <p class="setting-description">GPT-4o Mini offers the best balance of speed and quality</p>
+          </div>
+        </div>
+
+        <div class="settings-group">
           <h3>Default Summary Settings</h3>
           
           <div class="setting-item">

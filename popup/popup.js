@@ -44,7 +44,10 @@ class PopupController {
         language: 'auto',
         theme: 'system',
         useCustomPrompt: false,
-        customPrompt: ''
+        customPrompt: '',
+        openaiApiKey: '',
+        aiModel: 'gpt-4o-mini',
+        enableAI: false
       });
       
       this.settings = settings;
@@ -120,12 +123,31 @@ class PopupController {
       }
 
       // Generate summary prompt
-      const summary = this.generateSummaryPrompt(response, tab);
-      this.currentSummary = summary;
+      const prompt = this.generateSummaryPrompt(response, tab);
       
-      // Display the summary
-      this.elements.summaryContent.textContent = summary;
-      this.setStatus('success', 'Summary ready');
+      // Check if AI is enabled
+      if (this.settings.enableAI && this.settings.openaiApiKey) {
+        this.setStatus('loading', 'Generating AI summary...');
+        this.elements.summaryContent.innerHTML = '<p class="loading-message">⚡ Calling OpenAI API...</p>';
+        
+        try {
+          const aiSummary = await this.callAIAPI(prompt);
+          this.currentSummary = aiSummary;
+          this.elements.summaryContent.textContent = aiSummary;
+          this.setStatus('success', 'AI summary ready');
+        } catch (error) {
+          // Fallback to prompt if AI fails
+          console.error('AI generation failed, showing prompt:', error);
+          this.currentSummary = prompt + `\n\n⚠️ AI Error: ${error.message}\n📋 Copy the prompt above and use it manually.`;
+          this.elements.summaryContent.textContent = this.currentSummary;
+          this.setStatus('error', error.message);
+        }
+      } else {
+        // No AI configured, show the prompt
+        this.currentSummary = prompt;
+        this.elements.summaryContent.textContent = prompt;
+        this.setStatus('success', 'Prompt ready (AI not configured)');
+      }
       
       // Save to history
       this.historyManager.addEntry({
@@ -152,18 +174,51 @@ class PopupController {
         .replace(/\{\{SELECTED_LANGUAGE\}\}/g, this.settings.language);
     }
 
-    // Default forensic prompt from messages.json (simplified for display)
-    const forensicPrompt = `You are an ultra-intelligent, semi-autonomous AI summarizer with forensic-level detail extraction capabilities...
+    // Default forensic prompt from messages.json
+    return chrome.i18n.getMessage('defaultQuestion')
+      .replace('{{CONTENT}}', pageContent.content)
+      .replace('{{URL}}', tab.url)
+      .replace('{{TITLE}}', tab.title)
+      .replace('{{SELECTED_LANGUAGE}}', this.settings.language);
+  }
 
-Page: ${tab.title}
-URL: ${tab.url}
+  async callAIAPI(prompt) {
+    // Check if API key is configured
+    if (!this.settings.openaiApiKey) {
+      throw new Error('OpenAI API key not configured. Please add your API key in Settings.');
+    }
 
-Content:
-${pageContent.content.substring(0, 5000)}${pageContent.content.length > 5000 ? '...' : ''}
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.settings.openaiApiKey}`
+        },
+        body: JSON.stringify({
+          model: this.settings.aiModel || 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 2000
+        })
+      });
 
-📋 Copy this prompt and paste it into your preferred AI service (ChatGPT, Claude, etc.) for a comprehensive summary.`;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || `API Error: ${response.status}`);
+      }
 
-    return forensicPrompt;
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('AI API Error:', error);
+      throw error;
+    }
   }
 
   async copySummaryToClipboard() {

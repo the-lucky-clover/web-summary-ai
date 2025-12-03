@@ -8,7 +8,10 @@ class OptionsController {
       youtubeButton: true,
       autoTranscript: true,
       useCustomPrompt: false,
-      customPrompt: ''
+      customPrompt: '',
+      enableAI: false,
+      openaiApiKey: '',
+      aiModel: 'gpt-4o-mini'
     };
 
     this.promptTemplates = this.getPromptTemplates();
@@ -37,6 +40,13 @@ class OptionsController {
       contextMenu: document.getElementById('contextMenu'),
       youtubeButton: document.getElementById('youtubeButton'),
       autoTranscript: document.getElementById('autoTranscript'),
+      
+      // AI settings
+      enableAI: document.getElementById('enableAI'),
+      openaiApiKey: document.getElementById('openaiApiKey'),
+      aiModel: document.getElementById('aiModel'),
+      aiSettings: document.getElementById('aiSettings'),
+      aiModelContainer: document.getElementById('aiModelContainer'),
       
       // Custom prompt (simplified to single field)
       useCustomPrompt: document.getElementById('useCustomPrompt'),
@@ -87,6 +97,14 @@ class OptionsController {
       this.elements.youtubeButton.checked = settings.youtubeButton;
       this.elements.autoTranscript.checked = settings.autoTranscript;
       
+      // AI settings
+      this.elements.enableAI.checked = settings.enableAI;
+      this.elements.openaiApiKey.value = settings.openaiApiKey || '';
+      this.elements.aiModel.value = settings.aiModel || 'gpt-4o-mini';
+      
+      // Show/hide AI settings based on checkbox
+      this.toggleAISettings(settings.enableAI);
+      
       // Custom prompt
       this.elements.useCustomPrompt.checked = settings.useCustomPrompt;
       this.elements.customPrompt.value = settings.customPrompt || '';
@@ -111,6 +129,12 @@ class OptionsController {
       this.resetSettings();
     });
 
+    // AI toggle
+    this.elements.enableAI.addEventListener('change', () => {
+      this.toggleAISettings(this.elements.enableAI.checked);
+      this.autoSave();
+    });
+
     // Custom prompt toggle
     this.elements.useCustomPrompt.addEventListener('change', () => {
       this.toggleCustomPromptSettings(this.elements.useCustomPrompt.checked);
@@ -124,6 +148,9 @@ class OptionsController {
       this.elements.contextMenu,
       this.elements.youtubeButton,
       this.elements.autoTranscript,
+      this.elements.enableAI,
+      this.elements.openaiApiKey,
+      this.elements.aiModel,
       this.elements.useCustomPrompt,
       this.elements.customPrompt
     ];
@@ -160,6 +187,9 @@ class OptionsController {
         contextMenu: this.elements.contextMenu.checked,
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
+        enableAI: this.elements.enableAI.checked,
+        openaiApiKey: this.elements.openaiApiKey.value,
+        aiModel: this.elements.aiModel.value,
         useCustomPrompt: this.elements.useCustomPrompt.checked,
         customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
@@ -193,6 +223,9 @@ class OptionsController {
         contextMenu: this.elements.contextMenu.checked,
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
+        enableAI: this.elements.enableAI.checked,
+        openaiApiKey: this.elements.openaiApiKey.value,
+        aiModel: this.elements.aiModel.value,
         useCustomPrompt: this.elements.useCustomPrompt.checked,
         customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
@@ -288,6 +321,15 @@ Your settings are ready to use. Enjoy summarizing!`;
     
     // Update release date
     this.elements.releaseDate.textContent = 'October 2024';
+  }
+
+  toggleAISettings(show) {
+    if (this.elements.aiSettings) {
+      this.elements.aiSettings.style.display = show ? 'block' : 'none';
+    }
+    if (this.elements.aiModelContainer) {
+      this.elements.aiModelContainer.style.display = show ? 'block' : 'none';
+    }
   }
 
   toggleCustomPromptSettings(show) {

@@ -6,44 +6,46 @@ DIST_DIR="dist"
 
 echo "🚀 Building Web Summary AI v${VERSION} for all browsers..."
 
-# Clean dist directory
-rm -rf ${DIST_DIR}
-mkdir -p ${DIST_DIR}
+# Create browser-specific directories
+mkdir -p ${DIST_DIR}/chrome
+mkdir -p ${DIST_DIR}/firefox
+mkdir -p ${DIST_DIR}/edge
+mkdir -p ${DIST_DIR}/safari
 
 # Chrome/Chromium build
 echo "📦 Building Chrome package..."
-mkdir -p ${DIST_DIR}/chrome-build
-cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/chrome-build/ 2>/dev/null
-cp manifest.json ${DIST_DIR}/chrome-build/
-cd ${DIST_DIR}/chrome-build && zip -r ../web-summary-ai-chrome-v${VERSION}.zip . && cd ../..
-echo "✅ Chrome: web-summary-ai-chrome-v${VERSION}.zip"
+mkdir -p ${DIST_DIR}/chrome/build
+cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/chrome/build/ 2>/dev/null
+cp manifest.json ${DIST_DIR}/chrome/build/
+cd ${DIST_DIR}/chrome && zip -r web-summary-ai-v${VERSION}.zip build && rm -rf build && cd ../..
+echo "✅ Chrome: dist/chrome/web-summary-ai-v${VERSION}.zip"
 
-# Edge build (same as Chrome)
+# Edge build
 echo "📦 Building Edge package..."
-mkdir -p ${DIST_DIR}/edge-build
-cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/edge-build/ 2>/dev/null
-cp manifest-edge.json ${DIST_DIR}/edge-build/manifest.json
-cd ${DIST_DIR}/edge-build && zip -r ../web-summary-ai-edge-v${VERSION}.zip . && cd ../..
-echo "✅ Edge: web-summary-ai-edge-v${VERSION}.zip"
+mkdir -p ${DIST_DIR}/edge/build
+cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/edge/build/ 2>/dev/null
+cp manifest-edge.json ${DIST_DIR}/edge/build/manifest.json
+cd ${DIST_DIR}/edge && zip -r web-summary-ai-v${VERSION}.zip build && rm -rf build && cd ../..
+echo "✅ Edge: dist/edge/web-summary-ai-v${VERSION}.zip"
 
 # Firefox build
 echo "📦 Building Firefox package..."
-mkdir -p ${DIST_DIR}/firefox-build
-cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/firefox-build/ 2>/dev/null
-cp manifest-firefox.json ${DIST_DIR}/firefox-build/manifest.json
-cd ${DIST_DIR}/firefox-build && zip -r ../web-summary-ai-firefox-v${VERSION}.xpi . && cd ../..
-echo "✅ Firefox: web-summary-ai-firefox-v${VERSION}.xpi"
+mkdir -p ${DIST_DIR}/firefox/build
+cp -r assets background content debug demo history icons options popup *.html *.css *.js ${DIST_DIR}/firefox/build/ 2>/dev/null
+cp manifest-firefox.json ${DIST_DIR}/firefox/build/manifest.json
+cd ${DIST_DIR}/firefox && zip -r web-summary-ai-v${VERSION}.xpi build && rm -rf build && cd ../..
+echo "✅ Firefox: dist/firefox/web-summary-ai-v${VERSION}.xpi"
 
 # Safari build (copy source)
 echo "📦 Preparing Safari package..."
-mkdir -p ${DIST_DIR}/safari-build
-cp -r safari-extension-v1.0.0/* ${DIST_DIR}/safari-build/
-cd ${DIST_DIR} && zip -r web-summary-ai-safari-v${VERSION}.zip safari-build && cd ..
-echo "✅ Safari: web-summary-ai-safari-v${VERSION}.zip (requires Xcode to build)"
-
-# Clean up build directories
-rm -rf ${DIST_DIR}/chrome-build ${DIST_DIR}/edge-build ${DIST_DIR}/firefox-build ${DIST_DIR}/safari-build
+mkdir -p ${DIST_DIR}/safari/source
+cp -r safari-extension-v1.0.0/* ${DIST_DIR}/safari/source/
+cd ${DIST_DIR}/safari && zip -r web-summary-ai-v${VERSION}.zip source && rm -rf source && cd ../..
+echo "✅ Safari: dist/safari/web-summary-ai-v${VERSION}.zip"
 
 echo ""
-echo "✨ Build complete! Packages available in ${DIST_DIR}/"
-ls -lh ${DIST_DIR}/*.{zip,xpi} 2>/dev/null
+echo "✨ Build complete! Organized by browser:"
+echo "  📁 dist/chrome/web-summary-ai-v${VERSION}.zip"
+echo "  📁 dist/firefox/web-summary-ai-v${VERSION}.xpi"
+echo "  📁 dist/edge/web-summary-ai-v${VERSION}.zip"
+echo "  📁 dist/safari/web-summary-ai-v${VERSION}.zip"

@@ -347,7 +347,7 @@
           <div class="browser-icon">🟢</div>
           <h3>Chrome</h3>
           <div class="version">v1.0.0 • Manifest V3</div>
-          <a href="web-summary-ai-chrome-v1.0.0.zip" class="download-btn" download>Download</a>
+          <a href="chrome/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download</a>
           <br>
           <a href="https://chrome.google.com/webstore" class="secondary-btn" target="_blank">Chrome Web Store</a>
         </div>
@@ -356,7 +356,7 @@
           <div class="browser-icon">🦊</div>
           <h3>Firefox</h3>
           <div class="version">v1.0.0 • Manifest V2</div>
-          <a href="web-summary-ai-firefox-v1.0.0.xpi" class="download-btn" download>Download</a>
+          <a href="firefox/web-summary-ai-v1.0.0.xpi" class="download-btn" download>Download</a>
           <br>
           <a href="https://addons.mozilla.org" class="secondary-btn" target="_blank">Firefox Add-ons</a>
         </div>
@@ -365,7 +365,7 @@
           <div class="browser-icon">🔷</div>
           <h3>Edge</h3>
           <div class="version">v1.0.0 • Manifest V3</div>
-          <a href="web-summary-ai-edge-v1.0.0.zip" class="download-btn" download>Download</a>
+          <a href="edge/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download</a>
           <br>
           <a href="https://microsoftedge.microsoft.com/addons" class="secondary-btn" target="_blank">Edge Add-ons</a>
         </div>
@@ -374,7 +374,7 @@
           <div class="browser-icon">🧭</div>
           <h3>Safari (macOS)</h3>
           <div class="version">v1.0.0 • Requires Xcode</div>
-          <a href="web-summary-ai-safari-v1.0.0.zip" class="download-btn" download>Download Source</a>
+          <a href="safari/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download Source</a>
           <br>
           <a href="#safari-instructions" class="secondary-btn">Build Instructions</a>
         </div>
@@ -394,62 +394,65 @@
       <div id="chrome" class="tab-content active">
         <h3>Chrome Installation</h3>
         <ol>
-          <li>Download <code>web-summary-ai-chrome-v1.0.0.zip</code></li>
-          <li>Unzip the file to a folder</li>
+          <li>Download from the Chrome card above</li>
+          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
+          <li>Extract the <code>build</code> folder</li>
           <li>Open Chrome and go to <code>chrome://extensions/</code></li>
           <li>Enable "Developer mode" (toggle in top right)</li>
           <li>Click "Load unpacked" button</li>
-          <li>Select the unzipped folder</li>
+          <li>Select the extracted <code>build</code> folder</li>
           <li>Extension will appear in your toolbar!</li>
         </ol>
         <div class="note">
-          <strong>Note:</strong> For production use, submit to Chrome Web Store for automatic updates.
+          <strong>Note:</strong> First time use requires logging in to ChatGPT.com. The extension will prompt you if needed.
         </div>
       </div>
 
       <div id="firefox" class="tab-content">
         <h3>Firefox Installation</h3>
         <ol>
-          <li>Download <code>web-summary-ai-firefox-v1.0.0.xpi</code></li>
+          <li>Download from the Firefox card above</li>
           <li>Open Firefox and go to <code>about:addons</code></li>
           <li>Click the gear icon (⚙️) → "Install Add-on From File..."</li>
-          <li>Select the downloaded <code>.xpi</code> file</li>
+          <li>Select <code>web-summary-ai-v1.0.0.xpi</code></li>
           <li>Click "Add" when prompted</li>
           <li>Extension will appear in your toolbar!</li>
         </ol>
         <div class="note">
-          <strong>Note:</strong> For permanent installation, submit to Firefox Add-ons (AMO) for signing.
+          <strong>Note:</strong> Sign in to ChatGPT.com before first use for best experience.
         </div>
       </div>
 
       <div id="edge" class="tab-content">
         <h3>Edge Installation</h3>
         <ol>
-          <li>Download <code>web-summary-ai-edge-v1.0.0.zip</code></li>
-          <li>Unzip the file to a folder</li>
+          <li>Download from the Edge card above</li>
+          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
+          <li>Extract the <code>build</code> folder</li>
           <li>Open Edge and go to <code>edge://extensions/</code></li>
           <li>Enable "Developer mode" (toggle in left sidebar)</li>
           <li>Click "Load unpacked" button</li>
-          <li>Select the unzipped folder</li>
+          <li>Select the extracted <code>build</code> folder</li>
           <li>Extension will appear in your toolbar!</li>
         </ol>
         <div class="note">
-          <strong>Note:</strong> Submit to Microsoft Edge Add-ons for store distribution.
+          <strong>Note:</strong> Log in to ChatGPT.com first for automatic AI summaries.
         </div>
       </div>
 
       <div id="safari" class="tab-content">
         <h3 id="safari-instructions">Safari Installation (macOS)</h3>
         <ol>
-          <li>Download <code>web-summary-ai-safari-v1.0.0.zip</code></li>
-          <li>Unzip and open the folder in Xcode</li>
+          <li>Download from the Safari card above</li>
+          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
+          <li>Open the <code>source</code> folder in Xcode</li>
           <li>Create new "Safari Web Extension" project</li>
           <li>Copy extension files to the project</li>
           <li>Build and run from Xcode (⌘+R)</li>
           <li>In Safari: Preferences → Extensions → Enable "Web Summary AI"</li>
         </ol>
         <div class="note">
-          <strong>Note:</strong> Safari extensions require macOS development setup. For App Store distribution, you'll need an Apple Developer account.
+          <strong>Note:</strong> Safari extensions require macOS development setup. Requires ChatGPT login for AI features.
         </div>
       </div>
     </section>

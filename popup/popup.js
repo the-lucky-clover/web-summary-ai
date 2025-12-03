@@ -233,54 +233,111 @@ class PopupController {
   }
 
   async sendToChatGPTWeb(prompt) {
-    return new Promise((resolve, reject) => {
-      // Open ChatGPT in a new tab
-      const chatgptUrl = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
-      
-      chrome.tabs.create({ url: chatgptUrl, active: false }, (newTab) => {
-        if (!newTab) {
-          reject(new Error('Failed to open ChatGPT tab'));
+    return new Promise(async (resolve, reject) => {
+      try {
+        // First, check if user is logged in by opening ChatGPT briefly
+        this.setStatus('loading', 'Checking ChatGPT login status...');
+        this.elements.summaryContent.innerHTML = '<p class="loading-message">🔐 Verifying ChatGPT access...</p>';
+        
+        const checkTab = await chrome.tabs.create({ url: 'https://chatgpt.com', active: false });
+        
+        // Wait for page to load
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Check login status
+        const loginStatus = await new Promise((resolveLogin) => {
+          chrome.tabs.sendMessage(checkTab.id, { action: 'checkChatGPTLogin' }, (response) => {
+            if (chrome.runtime.lastError) {
+              resolveLogin({ loggedIn: false, needsCloudflare: false });
+            } else {
+              resolveLogin(response || { loggedIn: false, needsCloudflare: false });
+            }
+          });
+        });
+        
+        // Handle login/Cloudflare requirements
+        if (loginStatus.needsCloudflare) {
+          // Show Cloudflare tab to user
+          chrome.tabs.update(checkTab.id, { active: true });
+          this.elements.summaryContent.innerHTML = 
+            '<p class="loading-message" style="color: #f59e0b;">⚠️ Cloudflare Verification Required</p>' +
+            '<p>Please complete the security check in the ChatGPT tab, then click the refresh button below.</p>';
+          reject(new Error('Cloudflare verification required. Please complete the check and try again.'));
           return;
         }
-
-        // Update status
-        this.setStatus('loading', 'Waiting for ChatGPT response...');
-        this.elements.summaryContent.innerHTML = '<p class="loading-message">⏳ ChatGPT is generating your summary...<br><br>Check the new tab for the response!</p>';
-
+        
+        if (!loginStatus.loggedIn) {
+          // Show login tab to user
+          chrome.tabs.update(checkTab.id, { active: true });
+          this.elements.summaryContent.innerHTML = 
+            '<p class="loading-message" style="color: #ea4335;">🔐 ChatGPT Login Required</p>' +
+            '<p>Please log in to ChatGPT in the new tab, then click the refresh button below to generate your summary.</p>';
+          reject(new Error('Please log in to ChatGPT and try again.'));
+          return;
+        }
+        
+        // User is logged in, proceed with summary in background
+        this.setStatus('loading', 'Generating AI summary...');
+        this.elements.summaryContent.innerHTML = '<p class="loading-message">🤖 Processing in background...</p>';
+        
+        // Navigate to prompt URL (stays in background)
+        const chatgptUrl = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+        await chrome.tabs.update(checkTab.id, { url: chatgptUrl });
+        
         // Set up listener for the response
         let checkCount = 0;
-        const maxChecks = 60; // 60 seconds timeout
+        const maxChecks = 90; // 90 seconds timeout for generation
+        let tabClosed = false;
 
         const checkForResponse = setInterval(() => {
           checkCount++;
 
           if (checkCount >= maxChecks) {
             clearInterval(checkForResponse);
-            resolve('⏱️ Response timeout. Please check the ChatGPT tab manually for your summary.\n\nThe prompt has been sent to ChatGPT.com.');
+            if (!tabClosed) {
+              chrome.tabs.remove(checkTab.id).catch(() => {});
+            }
+            resolve('⏱️ Response timeout. The AI may be taking longer than expected.\n\nPlease try again or use a shorter prompt.');
             return;
           }
 
-          // Try to inject content script to get response
-          chrome.tabs.sendMessage(newTab.id, { action: 'getChatGPTResponse' }, (response) => {
+          // Try to get response from background tab
+          chrome.tabs.sendMessage(checkTab.id, { action: 'getChatGPTResponse' }, (response) => {
             if (chrome.runtime.lastError) {
-              // Tab not ready yet, continue checking
+              // Tab not ready yet or closed
               return;
             }
 
-            if (response && response.content && response.content.length > 50) {
+            if (response && response.success && response.content && response.content.length > 50) {
               clearInterval(checkForResponse);
+              
+              // Close the background tab silently
+              chrome.tabs.remove(checkTab.id).catch(() => {});
+              tabClosed = true;
+              
               resolve(response.content);
             }
           });
         }, 1000);
 
-        // Also show a helpful message after 5 seconds
-        setTimeout(() => {
-          if (checkCount < maxChecks) {
-            this.elements.summaryContent.innerHTML = '<p class="loading-message">⏳ Still waiting for ChatGPT...<br><br>✨ <strong>Tip:</strong> You may need to be logged in to ChatGPT.com<br><br>The response will appear here when ready, or check the new tab!</p>';
-          }
-        }, 5000);
-      });
+        // Update status periodically
+        const statusUpdates = [
+          { time: 5000, message: '⏳ ChatGPT is thinking...' },
+          { time: 15000, message: '📝 Generating summary...' },
+          { time: 30000, message: '⏱️ Almost there...' }
+        ];
+        
+        statusUpdates.forEach(update => {
+          setTimeout(() => {
+            if (checkCount < maxChecks && !tabClosed) {
+              this.elements.summaryContent.innerHTML = `<p class="loading-message">${update.message}<br><br>Processing silently in background...</p>`;
+            }
+          }, update.time);
+        });
+        
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 

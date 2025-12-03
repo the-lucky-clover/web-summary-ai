@@ -3,8 +3,9 @@
 
 /*
   Cache-Control: no-cache, no-store, must-revalidate, max-age=0
-  X-Build-Version: v1.0.0-glassmorphism-redesign
-  X-Timestamp: 1764776500
+  X-Build-Version: v1.0.0-all-browsers
+  X-Timestamp: 1764778000
+  X-Deploy-Date: 2025-12-03
 
 /*.html
   Cache-Control: no-cache, no-store, must-revalidate, max-age=0

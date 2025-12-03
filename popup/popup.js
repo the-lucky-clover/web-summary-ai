@@ -45,9 +45,12 @@ class PopupController {
         theme: 'system',
         useCustomPrompt: false,
         customPrompt: '',
-        openaiApiKey: '',
+        enableAI: true,
+        useChatGPTWeb: true,
+        aiProvider: 'none',
+        apiKey: '',
         aiModel: 'gpt-4o-mini',
-        enableAI: false
+        useApiForLargeContent: false
       });
       
       this.settings = settings;
@@ -126,27 +129,74 @@ class PopupController {
       const prompt = this.generateSummaryPrompt(response, tab);
       
       // Check if AI is enabled
-      if (this.settings.enableAI && this.settings.openaiApiKey) {
-        this.setStatus('loading', 'Generating AI summary...');
-        this.elements.summaryContent.innerHTML = '<p class="loading-message">⚡ Calling OpenAI API...</p>';
+      if (this.settings.enableAI) {
+        // Check for large content and decide which method to use
+        const contentLength = response.content.length;
+        const isLargeContent = contentLength > 12000; // ~3000 tokens
         
-        try {
-          const aiSummary = await this.callAIAPI(prompt);
-          this.currentSummary = aiSummary;
-          this.elements.summaryContent.textContent = aiSummary;
-          this.setStatus('success', 'AI summary ready');
-        } catch (error) {
-          // Fallback to prompt if AI fails
-          console.error('AI generation failed, showing prompt:', error);
-          this.currentSummary = prompt + `\n\n⚠️ AI Error: ${error.message}\n📋 Copy the prompt above and use it manually.`;
+        // Use API if: provider configured AND (always use API OR content is large and useApiForLargeContent enabled)
+        const useAPI = this.settings.aiProvider !== 'none' && this.settings.apiKey &&
+                       (this.settings.useApiForLargeContent || !this.settings.useChatGPTWeb);
+        
+        if (useAPI && isLargeContent && this.settings.useApiForLargeContent) {
+          // Large content + API configured for large content
+          this.setStatus('loading', 'Processing with API (large content)...');
+          this.elements.summaryContent.innerHTML = '<p class="loading-message">🔄 Chunking and processing large content...</p>';
+          
+          try {
+            const aiSummary = await this.processWithAPI(prompt, response.content);
+            this.currentSummary = aiSummary;
+            this.elements.summaryContent.textContent = aiSummary;
+            this.setStatus('success', 'AI summary ready');
+          } catch (error) {
+            console.error('API processing failed:', error);
+            // Fallback to ChatGPT web
+            if (this.settings.useChatGPTWeb) {
+              this.currentSummary = await this.tryChatGPTWeb(prompt);
+            } else {
+              throw error;
+            }
+          }
+        } else if (useAPI && !this.settings.useChatGPTWeb) {
+          // API-only mode
+          this.setStatus('loading', 'Calling API...');
+          this.elements.summaryContent.innerHTML = '<p class="loading-message">⚡ Generating AI summary...</p>';
+          
+          try {
+            const aiSummary = await this.processWithAPI(prompt, response.content);
+            this.currentSummary = aiSummary;
+            this.elements.summaryContent.textContent = aiSummary;
+            this.setStatus('success', 'AI summary ready');
+          } catch (error) {
+            console.error('API failed:', error);
+            this.currentSummary = prompt + `\n\n⚠️ API Error: ${error.message}\n📋 Copy the prompt above and use it manually.`;
+            this.elements.summaryContent.textContent = this.currentSummary;
+            this.setStatus('error', error.message);
+          }
+        } else if (this.settings.useChatGPTWeb) {
+          // Default: ChatGPT web mode
+          this.setStatus('loading', 'Opening ChatGPT...');
+          this.elements.summaryContent.innerHTML = '<p class="loading-message">🌐 Opening ChatGPT.com...</p>';
+          
+          try {
+            this.currentSummary = await this.tryChatGPTWeb(prompt);
+          } catch (error) {
+            console.error('ChatGPT web failed:', error);
+            this.currentSummary = prompt + `\n\n⚠️ Error: ${error.message}\n📋 Copy the prompt above and use it manually.`;
+            this.elements.summaryContent.textContent = this.currentSummary;
+            this.setStatus('error', error.message);
+          }
+        } else {
+          // No AI method configured
+          this.currentSummary = prompt + '\n\n⚠️ No AI method configured. Enable ChatGPT web or add an API key in settings.';
           this.elements.summaryContent.textContent = this.currentSummary;
-          this.setStatus('error', error.message);
+          this.setStatus('warning', 'AI not configured');
         }
       } else {
         // No AI configured, show the prompt
         this.currentSummary = prompt;
         this.elements.summaryContent.textContent = prompt;
-        this.setStatus('success', 'Prompt ready (AI not configured)');
+        this.setStatus('success', 'Prompt ready');
       }
       
       // Save to history
@@ -182,43 +232,56 @@ class PopupController {
       .replace('{{SELECTED_LANGUAGE}}', this.settings.language);
   }
 
-  async callAIAPI(prompt) {
-    // Check if API key is configured
-    if (!this.settings.openaiApiKey) {
-      throw new Error('OpenAI API key not configured. Please add your API key in Settings.');
-    }
+  async sendToChatGPTWeb(prompt) {
+    return new Promise((resolve, reject) => {
+      // Open ChatGPT in a new tab
+      const chatgptUrl = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+      
+      chrome.tabs.create({ url: chatgptUrl, active: false }, (newTab) => {
+        if (!newTab) {
+          reject(new Error('Failed to open ChatGPT tab'));
+          return;
+        }
 
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.settings.openaiApiKey}`
-        },
-        body: JSON.stringify({
-          model: this.settings.aiModel || 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'user',
-              content: prompt
+        // Update status
+        this.setStatus('loading', 'Waiting for ChatGPT response...');
+        this.elements.summaryContent.innerHTML = '<p class="loading-message">⏳ ChatGPT is generating your summary...<br><br>Check the new tab for the response!</p>';
+
+        // Set up listener for the response
+        let checkCount = 0;
+        const maxChecks = 60; // 60 seconds timeout
+
+        const checkForResponse = setInterval(() => {
+          checkCount++;
+
+          if (checkCount >= maxChecks) {
+            clearInterval(checkForResponse);
+            resolve('⏱️ Response timeout. Please check the ChatGPT tab manually for your summary.\n\nThe prompt has been sent to ChatGPT.com.');
+            return;
+          }
+
+          // Try to inject content script to get response
+          chrome.tabs.sendMessage(newTab.id, { action: 'getChatGPTResponse' }, (response) => {
+            if (chrome.runtime.lastError) {
+              // Tab not ready yet, continue checking
+              return;
             }
-          ],
-          temperature: 0.3,
-          max_tokens: 2000
-        })
+
+            if (response && response.content && response.content.length > 50) {
+              clearInterval(checkForResponse);
+              resolve(response.content);
+            }
+          });
+        }, 1000);
+
+        // Also show a helpful message after 5 seconds
+        setTimeout(() => {
+          if (checkCount < maxChecks) {
+            this.elements.summaryContent.innerHTML = '<p class="loading-message">⏳ Still waiting for ChatGPT...<br><br>✨ <strong>Tip:</strong> You may need to be logged in to ChatGPT.com<br><br>The response will appear here when ready, or check the new tab!</p>';
+          }
+        }, 5000);
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || `API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.choices[0].message.content;
-    } catch (error) {
-      console.error('AI API Error:', error);
-      throw error;
-    }
+    });
   }
 
   async copySummaryToClipboard() {
@@ -332,6 +395,272 @@ Available on GitHub under MIT License
     chrome.tabs.create({ 
       url: chrome.runtime.getURL('../options/options.html') 
     });
+  }
+  
+  /**
+   * Try ChatGPT web method with error handling
+   */
+  async tryChatGPTWeb(prompt) {
+    try {
+      const aiSummary = await this.sendToChatGPTWeb(prompt);
+      this.elements.summaryContent.textContent = aiSummary;
+      this.setStatus('success', 'AI summary ready');
+      return aiSummary;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  /**
+   * Process content with API (handles chunking for large content)
+   */
+  async processWithAPI(prompt, content) {
+    // Load text chunker utility
+    const chunker = new TextChunker();
+    const provider = this.settings.aiProvider;
+    const model = this.settings.aiModel;
+    
+    // Check if content needs chunking
+    if (chunker.needsChunking(content, model)) {
+      this.elements.summaryContent.innerHTML = '<p class="loading-message">📦 Large content detected. Breaking into chunks...</p>';
+      
+      // Create chunked prompts
+      const chunks = chunker.createChunkedPrompts(content, prompt, model);
+      
+      this.elements.summaryContent.innerHTML = `<p class="loading-message">🔄 Processing ${chunks.length} chunks...<br><br>This may take a moment...</p>`;
+      
+      // Process with AI provider
+      const aiProvider = new AIProvider();
+      const summary = await aiProvider.processChunkedContent(
+        provider,
+        this.settings.apiKey,
+        model,
+        chunks
+      );
+      
+      return summary;
+    } else {
+      // Content is small enough for single request
+      this.elements.summaryContent.innerHTML = '<p class="loading-message">⚡ Generating summary...</p>';
+      
+      const aiProvider = new AIProvider();
+      const summary = await aiProvider.callAPI(
+        provider,
+        this.settings.apiKey,
+        model,
+        prompt
+      );
+      
+      return summary;
+    }
+  }
+}
+
+// Load utility classes
+// Note: These are loaded via script tags in popup.html
+class TextChunker {
+  constructor(options = {}) {
+    this.tokenLimits = {
+      'chatgpt-web': 3000,
+      'gpt-4o-mini': 120000,
+      'gpt-4o': 120000,
+      'gpt-4': 7000,
+      'claude-3-haiku-20240307': 180000,
+      'claude-3-5-sonnet-20241022': 180000,
+      'claude-3-opus-20240229': 180000,
+      'gemini-1.5-flash': 950000,
+      'gemini-1.5-pro': 1900000
+    };
+    this.charsPerToken = 4;
+    this.maxChunkTokens = options.maxChunkTokens || 3000;
+  }
+  
+  estimateTokens(text) {
+    return Math.ceil(text.length / this.charsPerToken);
+  }
+  
+  getTokenLimit(model) {
+    return this.tokenLimits[model] || this.tokenLimits['chatgpt-web'];
+  }
+  
+  needsChunking(text, model = 'chatgpt-web') {
+    const tokenCount = this.estimateTokens(text);
+    const limit = this.getTokenLimit(model);
+    return tokenCount > (limit * 0.8);
+  }
+  
+  splitIntoSentences(text) {
+    return text.match(/[^.!?]+[.!?]+/g) || [text];
+  }
+  
+  splitIntoParagraphs(text) {
+    return text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+  }
+  
+  chunkText(text, maxTokens = null) {
+    const targetTokens = maxTokens || this.maxChunkTokens;
+    const targetChars = targetTokens * this.charsPerToken;
+    
+    if (this.estimateTokens(text) <= targetTokens) {
+      return [{text: text, index: 0, tokens: this.estimateTokens(text)}];
+    }
+    
+    const chunks = [];
+    let paragraphs = this.splitIntoParagraphs(text);
+    let currentChunk = '';
+    let currentIndex = 0;
+    
+    for (let paragraph of paragraphs) {
+      const testChunk = currentChunk + (currentChunk ? '\n\n' : '') + paragraph;
+      
+      if (this.estimateTokens(testChunk) > targetTokens && currentChunk) {
+        chunks.push({text: currentChunk, index: currentIndex, tokens: this.estimateTokens(currentChunk)});
+        currentChunk = paragraph;
+        currentIndex++;
+      } else {
+        currentChunk = testChunk;
+      }
+    }
+    
+    if (currentChunk.trim()) {
+      chunks.push({text: currentChunk, index: currentIndex, tokens: this.estimateTokens(currentChunk)});
+    }
+    
+    return chunks;
+  }
+  
+  createChunkedPrompts(text, basePrompt, model = 'chatgpt-web') {
+    const limit = this.getTokenLimit(model);
+    const chunks = this.chunkText(text, limit * 0.7);
+    
+    if (chunks.length === 1) {
+      return [{prompt: basePrompt + '\n\n' + chunks[0].text, chunkInfo: {index: 0, total: 1, tokens: chunks[0].tokens}}];
+    }
+    
+    return chunks.map((chunk, index) => {
+      const chunkInfo = `[Part ${index + 1} of ${chunks.length}]`;
+      let prompt = '';
+      
+      if (index === 0) {
+        prompt = `${basePrompt}\n\n${chunkInfo}\nThis is a multi-part content. Summarize this first part:\n\n${chunk.text}`;
+      } else if (index === chunks.length - 1) {
+        prompt = `${chunkInfo}\nThis is the final part. Provide a comprehensive summary:\n\n${chunk.text}`;
+      } else {
+        prompt = `${chunkInfo}\nContinue summarizing:\n\n${chunk.text}`;
+      }
+      
+      return {prompt, chunkInfo: {index, total: chunks.length, tokens: chunk.tokens}};
+    });
+  }
+}
+
+class AIProvider {
+  constructor() {
+    this.endpoints = {
+      openai: 'https://api.openai.com/v1/chat/completions',
+      anthropic: 'https://api.anthropic.com/v1/messages',
+      google: 'https://generativelanguage.googleapis.com/v1beta/models/'
+    };
+  }
+  
+  async callOpenAI(apiKey, model, prompt) {
+    const response = await fetch(this.endpoints.openai, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+      body: JSON.stringify({
+        model: model,
+        messages: [{role: 'user', content: prompt}],
+        temperature: 0.7,
+        max_tokens: 2000
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+  }
+  
+  async callAnthropic(apiKey, model, prompt) {
+    const response = await fetch(this.endpoints.anthropic, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01'},
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 2000,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Anthropic API error: ${error.error?.message || response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.content[0].text;
+  }
+  
+  async callGoogle(apiKey, model, prompt) {
+    const url = `${this.endpoints.google}${model}:generateContent?key=${apiKey}`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents: [{parts: [{text: prompt}]}],
+        generationConfig: {temperature: 0.7, maxOutputTokens: 2000}
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Google API error: ${error.error?.message || response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
+  }
+  
+  async callAPI(provider, apiKey, model, prompt) {
+    if (!apiKey) throw new Error(`API key required for ${provider}`);
+    
+    switch (provider) {
+      case 'openai': return await this.callOpenAI(apiKey, model, prompt);
+      case 'anthropic': return await this.callAnthropic(apiKey, model, prompt);
+      case 'google': return await this.callGoogle(apiKey, model, prompt);
+      default: throw new Error(`Unsupported provider: ${provider}`);
+    }
+  }
+  
+  async processChunkedContent(provider, apiKey, model, chunks) {
+    const summaries = [];
+    
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const summary = await this.callAPI(provider, apiKey, model, chunk.prompt);
+      summaries.push({chunkIndex: chunk.chunkInfo.index, summary: summary, tokens: chunk.chunkInfo.tokens});
+      
+      if (i < chunks.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    
+    if (summaries.length > 1) {
+      const combinedSummaries = summaries.map((s, i) => `Part ${i + 1}:\n${s.summary}`).join('\n\n');
+      const synthesisPrompt = `Based on these summaries, provide a comprehensive final summary:\n\n${combinedSummaries}`;
+      
+      try {
+        return await this.callAPI(provider, apiKey, model, synthesisPrompt);
+      } catch (error) {
+        return combinedSummaries;
+      }
+    }
+    
+    return summaries[0].summary;
   }
 }
 

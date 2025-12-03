@@ -9,9 +9,12 @@ class OptionsController {
       autoTranscript: true,
       useCustomPrompt: false,
       customPrompt: '',
-      enableAI: false,
-      openaiApiKey: '',
-      aiModel: 'gpt-4o-mini'
+      enableAI: true,
+      useChatGPTWeb: true,
+      aiProvider: 'none',
+      apiKey: '',
+      aiModel: 'gpt-4o-mini',
+      useApiForLargeContent: false
     };
 
     this.promptTemplates = this.getPromptTemplates();
@@ -43,10 +46,13 @@ class OptionsController {
       
       // AI settings
       enableAI: document.getElementById('enableAI'),
-      openaiApiKey: document.getElementById('openaiApiKey'),
+      useChatGPTWeb: document.getElementById('useChatGPTWeb'),
+      aiProvider: document.getElementById('aiProvider'),
+      apiKey: document.getElementById('apiKey'),
       aiModel: document.getElementById('aiModel'),
-      aiSettings: document.getElementById('aiSettings'),
-      aiModelContainer: document.getElementById('aiModelContainer'),
+      useApiForLargeContent: document.getElementById('useApiForLargeContent'),
+      apiKeyContainer: document.getElementById('apiKeyContainer'),
+      modelContainer: document.getElementById('modelContainer'),
       
       // Custom prompt (simplified to single field)
       useCustomPrompt: document.getElementById('useCustomPrompt'),
@@ -98,12 +104,15 @@ class OptionsController {
       this.elements.autoTranscript.checked = settings.autoTranscript;
       
       // AI settings
-      this.elements.enableAI.checked = settings.enableAI;
-      this.elements.openaiApiKey.value = settings.openaiApiKey || '';
+      this.elements.enableAI.checked = settings.enableAI !== undefined ? settings.enableAI : true;
+      this.elements.useChatGPTWeb.checked = settings.useChatGPTWeb !== undefined ? settings.useChatGPTWeb : true;
+      this.elements.aiProvider.value = settings.aiProvider || 'none';
+      this.elements.apiKey.value = settings.apiKey || '';
       this.elements.aiModel.value = settings.aiModel || 'gpt-4o-mini';
+      this.elements.useApiForLargeContent.checked = settings.useApiForLargeContent || false;
       
-      // Show/hide AI settings based on checkbox
-      this.toggleAISettings(settings.enableAI);
+      // Show/hide API settings and update model options
+      this.updateProviderUI(settings.aiProvider || 'none');
       
       // Custom prompt
       this.elements.useCustomPrompt.checked = settings.useCustomPrompt;
@@ -131,7 +140,28 @@ class OptionsController {
 
     // AI toggle
     this.elements.enableAI.addEventListener('change', () => {
-      this.toggleAISettings(this.elements.enableAI.checked);
+      this.autoSave();
+    });
+    
+    this.elements.useChatGPTWeb.addEventListener('change', () => {
+      this.autoSave();
+    });
+    
+    // API provider change
+    this.elements.aiProvider.addEventListener('change', () => {
+      this.updateProviderUI(this.elements.aiProvider.value);
+      this.autoSave();
+    });
+    
+    this.elements.apiKey.addEventListener('input', () => {
+      this.autoSave();
+    });
+    
+    this.elements.aiModel.addEventListener('change', () => {
+      this.autoSave();
+    });
+    
+    this.elements.useApiForLargeContent.addEventListener('change', () => {
       this.autoSave();
     });
 
@@ -149,8 +179,11 @@ class OptionsController {
       this.elements.youtubeButton,
       this.elements.autoTranscript,
       this.elements.enableAI,
-      this.elements.openaiApiKey,
+      this.elements.useChatGPTWeb,
+      this.elements.aiProvider,
+      this.elements.apiKey,
       this.elements.aiModel,
+      this.elements.useApiForLargeContent,
       this.elements.useCustomPrompt,
       this.elements.customPrompt
     ];
@@ -188,8 +221,11 @@ class OptionsController {
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
         enableAI: this.elements.enableAI.checked,
-        openaiApiKey: this.elements.openaiApiKey.value,
+        useChatGPTWeb: this.elements.useChatGPTWeb.checked,
+        aiProvider: this.elements.aiProvider.value,
+        apiKey: this.elements.apiKey.value,
         aiModel: this.elements.aiModel.value,
+        useApiForLargeContent: this.elements.useApiForLargeContent.checked,
         useCustomPrompt: this.elements.useCustomPrompt.checked,
         customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
@@ -224,8 +260,11 @@ class OptionsController {
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
         enableAI: this.elements.enableAI.checked,
-        openaiApiKey: this.elements.openaiApiKey.value,
+        useChatGPTWeb: this.elements.useChatGPTWeb.checked,
+        aiProvider: this.elements.aiProvider.value,
+        apiKey: this.elements.apiKey.value,
         aiModel: this.elements.aiModel.value,
+        useApiForLargeContent: this.elements.useApiForLargeContent.checked,
         useCustomPrompt: this.elements.useCustomPrompt.checked,
         customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
@@ -321,15 +360,6 @@ Your settings are ready to use. Enjoy summarizing!`;
     
     // Update release date
     this.elements.releaseDate.textContent = 'October 2024';
-  }
-
-  toggleAISettings(show) {
-    if (this.elements.aiSettings) {
-      this.elements.aiSettings.style.display = show ? 'block' : 'none';
-    }
-    if (this.elements.aiModelContainer) {
-      this.elements.aiModelContainer.style.display = show ? 'block' : 'none';
-    }
   }
 
   toggleCustomPromptSettings(show) {

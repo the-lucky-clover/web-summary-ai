@@ -43,6 +43,14 @@
       ],
       "js": ["content/youtube.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.chatgpt.com/*",
+        "*://*.chat.openai.com/*"
+      ],
+      "js": ["content/chatgpt-extractor.js"],
+      "run_at": "document_idle"
     }
   ],
   

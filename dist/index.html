@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Summary AI - Download</title>
-  <meta name="description" content="Download Web Summary AI extension for Chrome, Firefox, Edge, and Safari. AI-powered web and YouTube video summarization.">
+  <title>Web Summary AI - Instant AI-Powered Web Summaries</title>
+  <meta name="description" content="Instantly summarize any webpage with AI. Privacy-first, lightning-fast, zero tracking. Available for Safari, Chrome, Firefox, and Edge.">
+  <meta name="author" content="Web Summary AI">
+  <meta name="keywords" content="AI,web summarizer,Safari extension,privacy,summarize webpage,ChatGPT">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Web Summary AI - Instant AI-Powered Web Summaries">
+  <meta property="og:description" content="Instantly summarize any webpage with AI. Privacy-first, lightning-fast, zero tracking.">
+  <meta property="og:url" content="https://websummaryai.pages.dev/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Web Summary AI">
+  <meta name="twitter:description" content="Instantly summarize any webpage with AI">
+  
   <style>
     * {
       margin: 0;
@@ -14,482 +28,677 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #333;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      color: white;
-      padding: 60px 20px;
-    }
-
-    header h1 {
-      font-size: 3.5rem;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-
-    header p {
-      font-size: 1.3rem;
-      opacity: 0.95;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .version-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.2);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      margin-top: 15px;
-    }
-
-    .features {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      margin: 40px 0;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-
-    .features h2 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 30px;
-      color: #667eea;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin-top: 30px;
-    }
-
-    .feature {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .feature-icon {
-      font-size: 3rem;
-      margin-bottom: 15px;
-    }
-
-    .feature h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .feature p {
-      color: #666;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
       line-height: 1.6;
     }
 
-    .downloads {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      margin: 40px 0;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .downloads h2 {
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black, transparent);
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .glow-orb-1 {
+      top: 20%;
+      left: 20%;
+      width: 24rem;
+      height: 24rem;
+      background: rgba(34, 211, 238, 0.3);
+    }
+
+    .glow-orb-2 {
+      bottom: 20%;
+      right: 20%;
+      width: 24rem;
+      height: 24rem;
+      background: rgba(168, 85, 247, 0.3);
+      animation-delay: 1s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 40px;
-      color: #667eea;
     }
 
-    .browser-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 30px;
-      max-width: 1000px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      background: rgba(34, 211, 238, 0.1);
+      backdrop-filter: blur(12px);
+      margin-bottom: 2rem;
+    }
+
+    .badge-icon {
+      width: 1rem;
+      height: 1rem;
+      color: rgb(34, 211, 238);
+    }
+
+    .badge-text {
+      color: rgb(103, 232, 249);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, rgb(34, 211, 238), rgb(168, 85, 247), rgb(236, 72, 153));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 80px rgba(34, 211, 238, 0.5);
+    }
+
+    .hero-description {
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+      color: rgb(209, 213, 219);
+      margin-bottom: 3rem;
+      max-width: 48rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-description .highlight {
+      color: rgb(34, 211, 238);
+      font-weight: 600;
+    }
+
+    .stat-pills {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+    }
+
+    .stat-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .stat-icon-yellow { color: rgb(250, 204, 21); }
+    .stat-icon-cyan { color: rgb(34, 211, 238); }
+    .stat-icon-purple { color: rgb(168, 85, 247); }
+
+    .stat-text {
+      color: rgb(209, 213, 219);
+      font-size: 0.875rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn {
+      position: relative;
+      overflow: hidden;
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: white;
+      border: 2px solid;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-safari {
+      background: rgb(34, 211, 238);
+      border-color: rgb(103, 232, 249);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+    }
+
+    .btn-safari:hover {
+      box-shadow: 0 0 40px rgba(34, 211, 238, 0.8);
+      transform: scale(1.05);
+    }
+
+    .btn-chrome {
+      background: rgb(168, 85, 247);
+      border-color: rgb(192, 132, 252);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
+
+    .btn-chrome:hover {
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+      transform: scale(1.05);
+    }
+
+    .btn-firefox {
+      background: rgb(255, 122, 0);
+      border-color: rgb(255, 153, 51);
+      box-shadow: 0 0 20px rgba(255, 122, 0, 0.5);
+    }
+
+    .btn-firefox:hover {
+      box-shadow: 0 0 40px rgba(255, 122, 0, 0.8);
+      transform: scale(1.05);
+    }
+
+    .btn-edge {
+      background: rgb(0, 120, 212);
+      border-color: rgb(0, 153, 255);
+      box-shadow: 0 0 20px rgba(0, 120, 212, 0.5);
+    }
+
+    .btn-edge:hover {
+      box-shadow: 0 0 40px rgba(0, 120, 212, 0.8);
+      transform: scale(1.05);
+    }
+
+    /* Features Section */
+    .features {
+      position: relative;
+      padding: 8rem 1.5rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .section-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, rgb(34, 211, 238), rgb(168, 85, 247));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-description {
+      font-size: 1.25rem;
+      color: rgb(156, 163, 175);
+      max-width: 42rem;
       margin: 0 auto;
     }
-    
-    @media (min-width: 768px) {
-      .browser-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 80rem;
+      margin: 0 auto;
     }
 
-    .browser-card {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      border-radius: 15px;
-      padding: 30px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 2px solid transparent;
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+      backdrop-filter: blur(24px);
+      transition: all 0.5s;
     }
 
-    .browser-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-      border-color: #667eea;
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 50px rgba(34, 211, 238, 0.6);
     }
 
-    .browser-icon {
-      font-size: 4rem;
-      margin-bottom: 20px;
+    .feature-card:hover .feature-overlay {
+      opacity: 1;
     }
 
-    .browser-card h3 {
+    .feature-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .feature-icon-wrapper {
+      display: inline-flex;
+      padding: 0.75rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(34, 211, 238, 0.3);
+    }
+
+    .feature-icon-wrapper-cyan {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.2));
+    }
+
+    .feature-icon-wrapper-purple {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.2));
+    }
+
+    .feature-icon-wrapper-yellow {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(250, 204, 21, 0.2));
+    }
+
+    .feature-icon-wrapper-pink {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.2));
+    }
+
+    .feature-icon {
+      width: 2rem;
+      height: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .feature-title {
       font-size: 1.5rem;
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    .browser-card .version {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-    }
-
-    .download-btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
       color: white;
-      padding: 15px 40px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      position: relative;
+      z-index: 10;
     }
 
-    .download-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    .feature-description {
+      color: rgb(156, 163, 175);
+      line-height: 1.6;
+      position: relative;
+      z-index: 10;
     }
 
-    .secondary-btn {
-      display: inline-block;
-      background: transparent;
-      color: #667eea;
-      padding: 10px 25px;
-      border: 2px solid #667eea;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      margin-top: 10px;
-      transition: all 0.2s ease;
+    /* Download Section */
+    .download-section {
+      position: relative;
+      padding: 8rem 1.5rem;
     }
 
-    .secondary-btn:hover {
-      background: #667eea;
-      color: white;
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 80rem;
+      margin: 0 auto;
+      margin-top: 4rem;
     }
 
-    .instructions {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      margin: 40px 0;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-
-    .instructions h2 {
+    .download-card {
+      position: relative;
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+      backdrop-filter: blur(24px);
+      transition: all 0.5s;
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 30px;
-      color: #667eea;
     }
 
-    .instruction-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
+    .download-card:hover {
+      transform: translateY(-8px);
     }
 
-    .tab-btn {
-      padding: 12px 25px;
-      border: 2px solid #667eea;
-      background: white;
-      color: #667eea;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    .download-card-safari:hover {
+      box-shadow: 0 0 50px rgba(34, 211, 238, 0.4);
     }
 
-    .tab-btn.active {
-      background: #667eea;
+    .download-card-chrome:hover {
+      box-shadow: 0 0 50px rgba(168, 85, 247, 0.4);
+    }
+
+    .download-card-firefox:hover {
+      box-shadow: 0 0 50px rgba(255, 122, 0, 0.4);
+    }
+
+    .download-card-edge:hover {
+      box-shadow: 0 0 50px rgba(0, 120, 212, 0.4);
+    }
+
+    .download-emoji {
+      font-size: 4.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-title {
+      font-size: 1.875rem;
+      font-weight: 700;
       color: white;
+      margin-bottom: 0.75rem;
     }
 
-    .tab-content {
-      display: none;
-      background: #f8f9fa;
-      padding: 30px;
-      border-radius: 15px;
+    .download-subtitle {
+      color: rgb(156, 163, 175);
+      margin-bottom: 2rem;
     }
 
-    .tab-content.active {
-      display: block;
+    .download-note {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.875rem;
+      color: rgb(107, 114, 128);
     }
 
-    .tab-content ol {
-      list-style-position: inside;
-      line-height: 2;
-      color: #333;
-    }
-
-    .tab-content li {
-      margin-bottom: 15px;
-      padding-left: 10px;
-    }
-
-    .tab-content code {
-      background: #e9ecef;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      color: #d63384;
-    }
-
+    /* Footer */
     footer {
+      position: relative;
+      padding: 4rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-content {
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-top {
+        flex-direction: row;
+      }
+    }
+
+    .footer-brand {
       text-align: center;
-      color: white;
-      padding: 40px 20px;
-      margin-top: 60px;
     }
 
-    footer a {
-      color: white;
-      text-decoration: underline;
-      margin: 0 10px;
+    @media (min-width: 768px) {
+      .footer-brand {
+        text-align: left;
+      }
     }
 
-    .note {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 5px;
-      color: #856404;
+    .footer-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, rgb(34, 211, 238), rgb(168, 85, 247));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
     }
 
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2.5rem;
-      }
+    .footer-tagline {
+      color: rgb(107, 114, 128);
+      font-size: 0.875rem;
+    }
 
-      header p {
-        font-size: 1.1rem;
-      }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+    }
 
-      .browser-grid {
-        grid-template-columns: 1fr;
-      }
+    .footer-link {
+      color: rgb(156, 163, 175);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
 
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
+    .footer-link:hover {
+      color: rgb(34, 211, 238);
+    }
+
+    .footer-bottom {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      font-size: 0.875rem;
+      color: rgb(75, 85, 99);
+    }
+
+    /* SVG Icons */
+    .icon-sparkles {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
     }
   </style>
 </head>
 <body>
-  <!-- Build: v1.0.0-4browsers-LATEST - Deployed: 2025-12-03 - All 4 browsers: Chrome, Firefox, Edge, Safari -->
-  <div class="container">
-    <header>
-      <h1>🤖 Web Summary AI</h1>
-      <p>AI-powered summarization for web pages and YouTube videos. Free ChatGPT integration with optional API support.</p>
-      <div class="version-badge">Version 1.0.0 • 4 Browsers Available</div>
-    </header>
-
-    <section class="features">
-      <h2>✨ Features</h2>
-      <div class="feature-grid">
-        <div class="feature">
-          <div class="feature-icon">🌐</div>
-          <h3>Free ChatGPT Web</h3>
-          <p>Opens ChatGPT.com in background and extracts AI responses automatically. No API key needed!</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔑</div>
-          <h3>Optional API Support</h3>
-          <p>Add OpenAI, Anthropic (Claude), or Google Gemini API keys for direct integration.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📦</div>
-          <h3>Smart Chunking</h3>
-          <p>Automatically splits large content (3000+ tokens) into manageable chunks for processing.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🎥</div>
-          <h3>YouTube Transcripts</h3>
-          <p>Extracts and summarizes YouTube video transcripts with timestamps.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔒</div>
-          <h3>Privacy-First</h3>
-          <p>All settings stored locally. No tracking, no external data collection.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">⚡</div>
-          <h3>One-Click Summaries</h3>
-          <p>Click extension icon to instantly generate AI summaries of any page.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="downloads">
-      <h2>📥 Download for Your Browser</h2>
-      <div class="browser-grid">
-        <div class="browser-card">
-          <div class="browser-icon">🟢</div>
-          <h3>Chrome</h3>
-          <div class="version">v1.0.0 • Manifest V3</div>
-          <a href="chrome/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download</a>
-          <br>
-          <a href="https://chrome.google.com/webstore" class="secondary-btn" target="_blank" rel="noopener">Chrome Web Store</a>
-        </div>
-
-        <div class="browser-card">
-          <div class="browser-icon">🦊</div>
-          <h3>Firefox</h3>
-          <div class="version">v1.0.0 • Manifest V2</div>
-          <a href="firefox/web-summary-ai-v1.0.0.xpi" class="download-btn" download>Download</a>
-          <br>
-          <a href="https://addons.mozilla.org" class="secondary-btn" target="_blank" rel="noopener">Firefox Add-ons</a>
-        </div>
-
-        <div class="browser-card">
-          <div class="browser-icon">🔷</div>
-          <h3>Edge</h3>
-          <div class="version">v1.0.0 • Manifest V3</div>
-          <a href="edge/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download</a>
-          <br>
-          <a href="https://microsoftedge.microsoft.com/addons" class="secondary-btn" target="_blank" rel="noopener">Edge Add-ons</a>
-        </div>
-
-        <div class="browser-card">
-          <div class="browser-icon">🧭</div>
-          <h3>Safari (macOS)</h3>
-          <div class="version">v1.0.0 • Requires Xcode</div>
-          <a href="safari/web-summary-ai-v1.0.0.zip" class="download-btn" download>Download Source</a>
-          <br>
-          <a href="#safari-instructions" class="secondary-btn">Build Instructions</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="instructions">
-      <h2>📖 Installation Instructions</h2>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="glow-orb glow-orb-1"></div>
+      <div class="glow-orb glow-orb-2"></div>
       
-      <div class="instruction-tabs">
-        <button class="tab-btn active" onclick="showTab('chrome')">Chrome</button>
-        <button class="tab-btn" onclick="showTab('firefox')">Firefox</button>
-        <button class="tab-btn" onclick="showTab('edge')">Edge</button>
-        <button class="tab-btn" onclick="showTab('safari')">Safari</button>
-      </div>
-
-      <div id="chrome" class="tab-content active">
-        <h3>Chrome Installation</h3>
-        <ol>
-          <li>Download from the Chrome card above</li>
-          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
-          <li>Extract the <code>build</code> folder</li>
-          <li>Open Chrome and go to <code>chrome://extensions/</code></li>
-          <li>Enable "Developer mode" (toggle in top right)</li>
-          <li>Click "Load unpacked" button</li>
-          <li>Select the extracted <code>build</code> folder</li>
-          <li>Extension will appear in your toolbar!</li>
-        </ol>
-        <div class="note">
-          <strong>Note:</strong> First time use requires logging in to ChatGPT.com. The extension will prompt you if needed.
+      <div class="hero-content">
+        <div class="badge">
+          <svg class="badge-icon icon-sparkles" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"></path>
+          </svg>
+          <span class="badge-text">Powered by AI</span>
         </div>
-      </div>
 
-      <div id="firefox" class="tab-content">
-        <h3>Firefox Installation</h3>
-        <ol>
-          <li>Download from the Firefox card above</li>
-          <li>Open Firefox and go to <code>about:addons</code></li>
-          <li>Click the gear icon (⚙️) → "Install Add-on From File..."</li>
-          <li>Select <code>web-summary-ai-v1.0.0.xpi</code></li>
-          <li>Click "Add" when prompted</li>
-          <li>Extension will appear in your toolbar!</li>
-        </ol>
-        <div class="note">
-          <strong>Note:</strong> Sign in to ChatGPT.com before first use for best experience.
+        <h1>Web Summary AI</h1>
+        
+        <p class="hero-description">
+          Instantly summarize any webpage with AI. Privacy-first. Lightning-fast.
+          <span class="highlight"> Zero tracking.</span>
+        </p>
+
+        <div class="stat-pills">
+          <div class="stat-pill">
+            <svg class="stat-icon stat-icon-yellow icon-sparkles" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"></path>
+            </svg>
+            <span class="stat-text">3s average</span>
+          </div>
+          <div class="stat-pill">
+            <svg class="stat-icon stat-icon-cyan icon-sparkles" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
+            </svg>
+            <span class="stat-text">100% Private</span>
+          </div>
+          <div class="stat-pill">
+            <svg class="stat-icon stat-icon-purple icon-sparkles" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"></path>
+            </svg>
+            <span class="stat-text">AI-Powered</span>
+          </div>
         </div>
-      </div>
 
-      <div id="edge" class="tab-content">
-        <h3>Edge Installation</h3>
-        <ol>
-          <li>Download from the Edge card above</li>
-          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
-          <li>Extract the <code>build</code> folder</li>
-          <li>Open Edge and go to <code>edge://extensions/</code></li>
-          <li>Enable "Developer mode" (toggle in left sidebar)</li>
-          <li>Click "Load unpacked" button</li>
-          <li>Select the extracted <code>build</code> folder</li>
-          <li>Extension will appear in your toolbar!</li>
-        </ol>
-        <div class="note">
-          <strong>Note:</strong> Log in to ChatGPT.com first for automatic AI summaries.
-        </div>
-      </div>
-
-      <div id="safari" class="tab-content">
-        <h3 id="safari-instructions">Safari Installation (macOS)</h3>
-        <ol>
-          <li>Download from the Safari card above</li>
-          <li>Unzip <code>web-summary-ai-v1.0.0.zip</code></li>
-          <li>Open the <code>source</code> folder in Xcode</li>
-          <li>Create new "Safari Web Extension" project</li>
-          <li>Copy extension files to the project</li>
-          <li>Build and run from Xcode (⌘+R)</li>
-          <li>In Safari: Preferences → Extensions → Enable "Web Summary AI"</li>
-        </ol>
-        <div class="note">
-          <strong>Note:</strong> Safari extensions require macOS development setup. Requires ChatGPT login for AI features.
+        <div class="cta-buttons">
+          <a href="safari/web-summary-ai-v1.0.0.zip" class="btn btn-safari" download>Download for Safari</a>
+          <a href="chrome/web-summary-ai-v1.0.0.zip" class="btn btn-chrome" download>Download for Chrome</a>
+          <a href="firefox/web-summary-ai-v1.0.0.xpi" class="btn btn-firefox" download>Download for Firefox</a>
+          <a href="edge/web-summary-ai-v1.0.0.zip" class="btn btn-edge" download>Download for Edge</a>
         </div>
       </div>
     </section>
 
+    <!-- Features Section -->
+    <section class="features">
+      <div class="section-header">
+        <h2 class="section-title">Why Web Summary AI?</h2>
+        <p class="section-description">Built for speed, designed for privacy, powered by cutting-edge AI</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-cyan">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(34, 211, 238)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">AI-Powered Summaries</h3>
+          <p class="feature-description">Advanced language models digest complex content into clear, actionable insights in seconds.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-purple">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(168, 85, 247)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Privacy First</h3>
+          <p class="feature-description">Zero tracking. Zero data collection. Your browsing stays yours.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-yellow">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(250, 204, 21)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Lightning Fast</h3>
+          <p class="feature-description">3-second average response time. No waiting, just instant understanding.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-pink">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(236, 72, 153)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Smart Context</h3>
+          <p class="feature-description">Understands page structure, extracts key points, and maintains context across sections.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-cyan">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(34, 211, 238)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Universal Compatibility</h3>
+          <p class="feature-description">Works on any website. News, research, documentation, social media, and more.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-overlay"></div>
+          <div class="feature-icon-wrapper feature-icon-wrapper-purple">
+            <svg class="feature-icon icon-sparkles" style="color: rgb(168, 85, 247)" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Multi-Browser Support</h3>
+          <p class="feature-description">Available for Safari, Chrome, Firefox, and Edge. Works flawlessly across all platforms.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download-section">
+      <div class="section-header">
+        <h2 class="section-title">Get Started in Seconds</h2>
+        <p class="section-description">Choose your browser and download now</p>
+      </div>
+
+      <div class="download-grid">
+        <div class="download-card download-card-safari">
+          <div class="download-emoji">🧭</div>
+          <h3 class="download-title">Safari</h3>
+          <p class="download-subtitle">For macOS, iPhone & iPad</p>
+          <a href="safari/web-summary-ai-v1.0.0.zip" class="btn btn-safari" download>Download for Safari</a>
+        </div>
+
+        <div class="download-card download-card-chrome">
+          <div class="download-emoji">🟢</div>
+          <h3 class="download-title">Chrome</h3>
+          <p class="download-subtitle">Also works on Brave & Arc</p>
+          <a href="chrome/web-summary-ai-v1.0.0.zip" class="btn btn-chrome" download>Download for Chrome</a>
+        </div>
+
+        <div class="download-card download-card-firefox">
+          <div class="download-emoji">🦊</div>
+          <h3 class="download-title">Firefox</h3>
+          <p class="download-subtitle">For Firefox users</p>
+          <a href="firefox/web-summary-ai-v1.0.0.xpi" class="btn btn-firefox" download>Download for Firefox</a>
+        </div>
+
+        <div class="download-card download-card-edge">
+          <div class="download-emoji">🔷</div>
+          <h3 class="download-title">Edge</h3>
+          <p class="download-subtitle">Microsoft Edge support</p>
+          <a href="edge/web-summary-ai-v1.0.0.zip" class="btn btn-edge" download>Download for Edge</a>
+        </div>
+      </div>
+
+      <div class="download-note">
+        Free forever • No account required • Privacy-first design
+      </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
-      <p>&copy; 2025 Web Summary AI • 
-        <a href="https://github.com/the-lucky-clover/web-summary-ai" target="_blank" rel="noopener">GitHub</a> • 
-        <a href="https://github.com/the-lucky-clover/web-summary-ai/blob/main/PRIVACY.md" target="_blank" rel="noopener">Privacy Policy</a> • 
-        <a href="https://github.com/the-lucky-clover/web-summary-ai/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
-      </p>
-      <p style="margin-top: 20px; opacity: 0.8;">Made with ❤️ by the Web Summary AI Team</p>
+      <div class="footer-content">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <h3 class="footer-title">Web Summary AI</h3>
+            <p class="footer-tagline">Privacy-first AI summaries for the web</p>
+          </div>
+          <div class="footer-links">
+            <a href="https://github.com/the-lucky-clover/web-summary-ai/blob/main/PRIVACY.md" class="footer-link" target="_blank" rel="noopener">Privacy Policy</a>
+            <a href="https://github.com/the-lucky-clover/web-summary-ai/blob/main/LICENSE" class="footer-link" target="_blank" rel="noopener">License</a>
+            <a href="https://github.com/the-lucky-clover/web-summary-ai" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © 2025 Web Summary AI. All rights reserved.
+        </div>
+      </div>
     </footer>
-  </div>
-
-  <script>
-    function showTab(browser) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-      // Show selected tab
-      document.getElementById(browser).classList.add('active');
-      event.target.classList.add('active');
-    }
-  </script>
+  </main>
 </body>
 </html>

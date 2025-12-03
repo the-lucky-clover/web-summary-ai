@@ -113,10 +113,16 @@
 
     .browser-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 30px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
+    }
+    
+    @media (min-width: 768px) {
+      .browser-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .browser-card {

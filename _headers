@@ -1,3 +1,6 @@
+# Cloudflare Pages Headers File (NOT YAML - special Cloudflare format)
+# See: https://developers.cloudflare.com/pages/configuration/headers/
+
 /*
   Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   X-Build-Version: v1.0.0-glassmorphism-redesign

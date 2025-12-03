@@ -2,16 +2,13 @@
 class OptionsController {
   constructor() {
     this.defaultSettings = {
-      summaryLength: 'medium',
       language: 'auto',
       showFloatingButton: true,
       contextMenu: true,
       youtubeButton: true,
       autoTranscript: true,
-      useCustomPrompts: false,
-      customPromptShort: '',
-      customPromptMedium: '',
-      customPromptDetailed: ''
+      useCustomPrompt: false,
+      customPrompt: ''
     };
 
     this.promptTemplates = this.getPromptTemplates();
@@ -35,24 +32,16 @@ class OptionsController {
       sections: document.querySelectorAll('.settings-section'),
       
       // Settings inputs
-      defaultLength: document.getElementById('defaultLength'),
       defaultLanguage: document.getElementById('defaultLanguage'),
       showFloatingButton: document.getElementById('showFloatingButton'),
       contextMenu: document.getElementById('contextMenu'),
       youtubeButton: document.getElementById('youtubeButton'),
       autoTranscript: document.getElementById('autoTranscript'),
       
-      // Custom prompts
-      useCustomPrompts: document.getElementById('useCustomPrompts'),
-      customPromptShort: document.getElementById('customPromptShort'),
-      customPromptMedium: document.getElementById('customPromptMedium'),
-      customPromptDetailed: document.getElementById('customPromptDetailed'),
+      // Custom prompt (simplified to single field)
+      useCustomPrompt: document.getElementById('useCustomPrompt'),
+      customPrompt: document.getElementById('customPrompt'),
       customPromptSettings: document.getElementById('customPromptSettings'),
-      customPromptMediumContainer: document.getElementById('customPromptMediumContainer'),
-      customPromptDetailedContainer: document.getElementById('customPromptDetailedContainer'),
-      promptTemplatesContainer: document.getElementById('promptTemplatesContainer'),
-      promptTemplates: document.getElementById('promptTemplates'),
-      loadTemplate: document.getElementById('loadTemplate'),
       
       // Actions
       saveSettings: document.getElementById('saveSettings'),
@@ -92,21 +81,18 @@ class OptionsController {
       const settings = await chrome.storage.local.get(this.defaultSettings);
       
       // Apply settings to UI
-      this.elements.defaultLength.value = settings.summaryLength;
       this.elements.defaultLanguage.value = settings.language;
       this.elements.showFloatingButton.checked = settings.showFloatingButton;
       this.elements.contextMenu.checked = settings.contextMenu;
       this.elements.youtubeButton.checked = settings.youtubeButton;
       this.elements.autoTranscript.checked = settings.autoTranscript;
       
-      // Custom prompts
-      this.elements.useCustomPrompts.checked = settings.useCustomPrompts;
-      this.elements.customPromptShort.value = settings.customPromptShort || '';
-      this.elements.customPromptMedium.value = settings.customPromptMedium || '';
-      this.elements.customPromptDetailed.value = settings.customPromptDetailed || '';
+      // Custom prompt
+      this.elements.useCustomPrompt.checked = settings.useCustomPrompt;
+      this.elements.customPrompt.value = settings.customPrompt || '';
       
       // Show/hide custom prompt settings based on checkbox
-      this.toggleCustomPromptSettings(settings.useCustomPrompts);
+      this.toggleCustomPromptSettings(settings.useCustomPrompt);
       
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -125,29 +111,21 @@ class OptionsController {
       this.resetSettings();
     });
 
-    // Custom prompts toggle
-    this.elements.useCustomPrompts.addEventListener('change', () => {
-      this.toggleCustomPromptSettings(this.elements.useCustomPrompts.checked);
+    // Custom prompt toggle
+    this.elements.useCustomPrompt.addEventListener('change', () => {
+      this.toggleCustomPromptSettings(this.elements.useCustomPrompt.checked);
       this.autoSave();
-    });
-
-    // Load template button
-    this.elements.loadTemplate.addEventListener('click', () => {
-      this.loadPromptTemplate();
     });
 
     // Auto-save on change for better UX
     const inputs = [
-      this.elements.defaultLength,
       this.elements.defaultLanguage,
       this.elements.showFloatingButton,
       this.elements.contextMenu,
       this.elements.youtubeButton,
       this.elements.autoTranscript,
-      this.elements.useCustomPrompts,
-      this.elements.customPromptShort,
-      this.elements.customPromptMedium,
-      this.elements.customPromptDetailed
+      this.elements.useCustomPrompt,
+      this.elements.customPrompt
     ];
 
     inputs.forEach(input => {
@@ -177,16 +155,13 @@ class OptionsController {
   async saveSettings() {
     try {
       const settings = {
-        summaryLength: this.elements.defaultLength.value,
         language: this.elements.defaultLanguage.value,
         showFloatingButton: this.elements.showFloatingButton.checked,
         contextMenu: this.elements.contextMenu.checked,
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
-        useCustomPrompts: this.elements.useCustomPrompts.checked,
-        customPromptShort: this.elements.customPromptShort.value,
-        customPromptMedium: this.elements.customPromptMedium.value,
-        customPromptDetailed: this.elements.customPromptDetailed.value,
+        useCustomPrompt: this.elements.useCustomPrompt.checked,
+        customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
       };
 
@@ -213,12 +188,13 @@ class OptionsController {
   async autoSave() {
     try {
       const settings = {
-        summaryLength: this.elements.defaultLength.value,
         language: this.elements.defaultLanguage.value,
         showFloatingButton: this.elements.showFloatingButton.checked,
         contextMenu: this.elements.contextMenu.checked,
         youtubeButton: this.elements.youtubeButton.checked,
         autoTranscript: this.elements.autoTranscript.checked,
+        useCustomPrompt: this.elements.useCustomPrompt.checked,
+        customPrompt: this.elements.customPrompt.value,
         lastUpdated: Date.now()
       };
 
@@ -315,18 +291,9 @@ Your settings are ready to use. Enjoy summarizing!`;
   }
 
   toggleCustomPromptSettings(show) {
-    const containers = [
-      this.elements.customPromptSettings,
-      this.elements.customPromptMediumContainer,
-      this.elements.customPromptDetailedContainer,
-      this.elements.promptTemplatesContainer
-    ];
-
-    containers.forEach(container => {
-      if (container) {
-        container.style.display = show ? 'block' : 'none';
-      }
-    });
+    if (this.elements.customPromptSettings) {
+      this.elements.customPromptSettings.style.display = show ? 'block' : 'none';
+    }
   }
 
   getPromptTemplates() {

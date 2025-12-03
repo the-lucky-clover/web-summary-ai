@@ -20,52 +20,33 @@
       <div class="status-section">
         <div class="status" id="status">
           <span class="status-indicator" id="statusIndicator"></span>
-          <span id="statusText">Ready</span>
+          <span id="statusText">Loading summary...</span>
         </div>
       </div>
       
-      <div class="actions animate-materialize animate-delay-4">
-        <button id="summarizeBtn" class="primary-btn retro-button">
-          <span class="btn-icon">📄</span>
-          Summarize Current Page
-        </button>
-        
-        <button id="openPanelBtn" class="secondary-btn retro-button">
-          <span class="btn-icon">🔍</span>
-          Open Summary Panel
-        </button>
-      </div>
-      
-      <div class="options-section animate-slide-up animate-delay-5">
-        <div class="option-item">
-          <label for="summaryLength">Summary Length:</label>
-          <select id="summaryLength" class="retro-select">
-            <option value="short">Short</option>
-            <option value="medium" selected>Medium</option>
-            <option value="detailed">Detailed</option>
-          </select>
-        </div>
-        
-        <div class="field animate-slide-up animate-delay-7">
-          <label for="language" class="field-label">Language</label>
-          <select id="language" class="retro-select">
-            <option value="auto">Auto-detect</option>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="zh">Chinese</option>
-            <option value="ja">Japanese</option>
-            <option value="ko">Korean</option>
-          </select>
-        </div>
-        
-        <div class="option-item">
-          <label for="theme">Theme:</label>
-          <div id="themeSelector" class="theme-selector-container">
-            <!-- Theme selector will be inserted here -->
+      <div class="summary-container" id="summaryContainer">
+        <div class="summary-header">
+          <h2 id="summaryTitle">Page Summary</h2>
+          <div class="summary-actions">
+            <button id="copyBtn" class="icon-btn retro-button" title="Copy to clipboard">
+              <span class="btn-icon">📋</span>
+            </button>
+            <button id="refreshBtn" class="icon-btn retro-button" title="Regenerate summary">
+              <span class="btn-icon">🔄</span>
+            </button>
           </div>
         </div>
+        
+        <div class="summary-content" id="summaryContent">
+          <p class="loading-message">Extracting content from current page...</p>
+        </div>
+      </div>
+      
+      <div class="quick-actions animate-slide-up animate-delay-5">
+        <button id="openPanelBtn" class="secondary-btn retro-button">
+          <span class="btn-icon">🔍</span>
+          Open in Panel
+        </button>
       </div>
       
       <div class="footer animate-fade-in animate-delay-6">

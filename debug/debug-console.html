@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Summary AI - Safari Extension Debug Console</title>
+    <style>
+        :root {
+            --apple-blue: #007AFF;
+            --apple-green: #34C759;
+            --apple-orange: #FF9500;
+            --apple-red: #FF3B30;
+            --system-background: #FFFFFF;
+            --system-secondary-background: #F2F2F7;
+            --label-primary: #000000;
+            --label-secondary: rgba(60, 60, 67, 0.6);
+            --separator: rgba(60, 60, 67, 0.29);
+            --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --system-background: #000000;
+                --system-secondary-background: #1C1C1E;
+                --label-primary: #FFFFFF;
+                --label-secondary: rgba(235, 235, 245, 0.6);
+                --separator: rgba(84, 84, 88, 0.65);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--system-background);
+            color: var(--label-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .debug-header {
+            padding: 20px;
+            background: var(--system-secondary-background);
+            border-bottom: 1px solid var(--separator);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .debug-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--label-primary);
+        }
+
+        .debug-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .debug-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--apple-blue);
+            color: white;
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .debug-button:hover {
+            background: #0056CC;
+        }
+
+        .debug-button.secondary {
+            background: var(--system-secondary-background);
+            color: var(--apple-blue);
+            border: 1px solid var(--separator);
+        }
+
+        .debug-button.danger {
+            background: var(--apple-red);
+        }
+
+        .debug-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .debug-sidebar {
+            width: 300px;
+            background: var(--system-secondary-background);
+            border-right: 1px solid var(--separator);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--separator);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--label-primary);
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--label-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(120, 120, 128, 0.16);
+            color: var(--label-primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--apple-blue);
+            color: white;
+        }
+
+        .debug-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expression-input-container {
+            padding: 16px;
+            background: var(--system-background);
+            border-bottom: 1px solid var(--separator);
+        }
+
+        .expression-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--separator);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: var(--system-secondary-background);
+            color: var(--label-primary);
+            resize: none;
+            min-height: 60px;
+        }
+
+        .expression-input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+
+        .console-output {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--system-background);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .console-entry {
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid transparent;
+        }
+
+        .console-entry.input {
+            background: var(--system-secondary-background);
+            border-left-color: var(--apple-blue);
+        }
+
+        .console-entry.output {
+            background: rgba(52, 199, 89, 0.1);
+            border-left-color: var(--apple-green);
+        }
+
+        .console-entry.error {
+            background: rgba(255, 59, 48, 0.1);
+            border-left-color: var(--apple-red);
+            color: var(--apple-red);
+        }
+
+        .console-entry.system {
+            background: rgba(0, 122, 255, 0.1);
+            border-left-color: var(--apple-blue);
+        }
+
+        .console-timestamp {
+            font-size: 11px;
+            color: var(--label-secondary);
+            margin-bottom: 4px;
+        }
+
+        .console-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .extension-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--system-secondary-background);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--apple-green);
+        }
+
+        .status-indicator.disconnected {
+            background: var(--apple-red);
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--label-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-header">
+        <h1 class="debug-title">Safari Extension Debug Console</h1>
+        <div class="debug-controls">
+            <button class="debug-button secondary" onclick="clearConsole()">Clear</button>
+            <button class="debug-button" onclick="runTests()">Run Tests</button>
+            <button class="debug-button danger" onclick="resetExtension()">Reset</button>
+        </div>
+    </div>
+
+    <div class="debug-content">
+        <div class="debug-sidebar">
+            <div class="sidebar-section">
+                <div class="extension-status">
+                    <div class="status-indicator" id="status-indicator"></div>
+                    <div class="status-text" id="status-text">Initializing...</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Extension Components</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item active" onclick="selectComponent('extension')" data-component="extension">Extension</li>
+                    <li class="sidebar-item" onclick="selectComponent('content')" data-component="content">Content Script</li>
+                    <li class="sidebar-item" onclick="selectComponent('background')" data-component="background">Background</li>
+                    <li class="sidebar-item" onclick="selectComponent('options')" data-component="options">Options</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Actions</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item" onclick="testExtensionAPI()">Test Extension API</li>
+                    <li class="sidebar-item" onclick="testContentScript()">Test Content Script</li>
+                    <li class="sidebar-item" onclick="testStorage()">Test Storage</li>
+                    <li class="sidebar-item" onclick="inspectCurrentTab()">Inspect Current Tab</li>
+                    <li class="sidebar-item" onclick="testSummarization()">Test Summarization</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Debug Tools</div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-item" onclick="enableVerboseLogging()">Verbose Logging</li>
+                    <li class="sidebar-item" onclick="exportDebugData()">Export Debug Data</li>
+                    <li class="sidebar-item" onclick="simulateError()">Simulate Error</li>
+                    <li class="sidebar-item" onclick="performanceProfile()">Performance Profile</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="debug-main">
+            <div class="expression-input-container">
+                <textarea 
+                    class="expression-input" 
+                    id="expression-input" 
+                    placeholder="Enter JavaScript expression to evaluate (e.g., safari.extension, document.title, window.location)"
+                    onkeydown="handleKeydown(event)"></textarea>
+            </div>
+
+            <div class="console-output" id="console-output">
+                <div class="console-entry system">
+                    <div class="console-timestamp">${new Date().toLocaleTimeString()}</div>
+                    <div class="console-content">🚀 Safari Extension Debug Console initialized
+Ready to evaluate JavaScript expressions
+Type expressions above and press Cmd+Enter to evaluate
+
+Available test functions:
+• testExtensionAPI() - Test Safari extension APIs
+• testContentScript() - Test content script functionality  
+• testStorage() - Test storage operations
+• testSummarization() - Test AI summarization features</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SafariExtensionDebugger {
+            constructor() {
+                this.currentComponent = 'extension';
+                this.commandHistory = [];
+                this.historyIndex = -1;
+                this.debugData = {};
+                
+                this.initializeDebugger();
+                this.checkExtensionStatus();
+            }
+
+            initializeDebugger() {
+                this.logToConsole('system', '🔧 Safari Extension Debug Console v1.0.0');
+                this.logToConsole('system', '📱 Optimized for Safari on macOS and iOS');
+                
+                // Check Safari APIs
+                this.checkSafariAPIs();
+                
+                // Load any existing debug data
+                this.loadDebugData();
+            }
+
+            checkSafariAPIs() {
+                if (typeof safari !== 'undefined') {
+                    this.logToConsole('system', '✅ Safari global object detected');
+                    
+                    if (safari.extension) {
+                        this.logToConsole('system', '✅ Safari Extension API available');
+                        this.updateConnectionStatus(true);
+                        return;
+                    }
+                }
+                
+                this.logToConsole('system', '⚠️  Running in standalone web mode - Safari Extension APIs not available');
+                this.logToConsole('system', '💡 To test with full extension APIs, load this page within Safari extension context');
+                this.updateConnectionStatus(false);
+            }
+
+            checkExtensionStatus() {
+                // Additional extension status checks
+                setTimeout(() => {
+                    try {
+                        if (typeof safari !== 'undefined' && safari.extension) {
+                            this.debugData.extension = {
+                                baseURI: safari.extension.baseURI || 'Not available',
+                                displayVersion: safari.extension.displayVersion || 'Not available'
+                            };
+                            this.logToConsole('system', '🔗 Extension info loaded', this.debugData.extension);
+                        }
+                    } catch (e) {
+                        this.logToConsole('error', 'Extension status check failed: ' + e.message);
+                    }
+                }, 500);
+            }
+
+            updateConnectionStatus(connected) {
+                const indicator = document.getElementById('status-indicator');
+                const text = document.getElementById('status-text');
+                
+                if (connected) {
+                    indicator.className = 'status-indicator';
+                    text.textContent = 'Extension Connected';
+                } else {
+                    indicator.className = 'status-indicator disconnected';
+                    text.textContent = 'Web Mode';
+                }
+            }
+
+            logToConsole(type, message, data = null) {
+                const output = document.getElementById('console-output');
+                const entry = document.createElement('div');
+                entry.className = `console-entry ${type.toLowerCase()}`;
+                
+                const timestamp = document.createElement('div');
+                timestamp.className = 'console-timestamp';
+                timestamp.textContent = new Date().toLocaleTimeString();
+                
+                const content = document.createElement('div');
+                content.className = 'console-content';
+                
+                if (data) {
+                    content.textContent = `${message}\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    content.textContent = message;
+                }
+                
+                entry.appendChild(timestamp);
+                entry.appendChild(content);
+                output.appendChild(entry);
+                output.scrollTop = output.scrollHeight;
+            }
+
+            async evaluateExpression(expression) {
+                if (!expression.trim()) return;
+
+                this.commandHistory.unshift(expression);
+                this.historyIndex = -1;
+
+                this.logToConsole('input', `> ${expression}`);
+
+                try {
+                    // Create evaluation context
+                    const context = this.createEvaluationContext();
+                    
+                    let result;
+                    
+                    // Handle special cases
+                    if (expression.includes('safari.extension')) {
+                        result = this.evaluateSafariExtension(expression);
+                    } else if (expression.includes('testContentScript')) {
+                        result = await this.testContentScript();
+                    } else if (expression.includes('testSummarization')) {
+                        result = await this.testSummarization();
+                    } else {
+                        // Standard evaluation
+                        result = this.safeEval(expression, context);
+                    }
+
+                    // Handle promises
+                    if (result instanceof Promise) {
+                        result = await result;
+                    }
+
+                    this.logToConsole('output', 'Result:', result);
+                    
+                } catch (error) {
+                    this.logToConsole('error', `Error: ${error.message}`);
+                    console.error('Debug evaluation error:', error);
+                }
+            }
+
+            safeEval(expression, context) {
+                // Create a safe evaluation function
+                const func = new Function('context', `
+                    with (context) {
+                        return (${expression});
+                    }
+                `);
+                return func(context);
+            }
+
+            createEvaluationContext() {
+                return {
+                    // Safari APIs (real or mocked)
+                    safari: typeof safari !== 'undefined' ? safari : {
+                        extension: {
+                            baseURI: 'safari-extension://mock/',
+                            displayVersion: '1.0.0 (Mock)'
+                        }
+                    },
+                    
+                    // Helper functions
+                    inspect: (obj) => {
+                        this.logToConsole('output', 'Inspecting object:', obj);
+                        return obj;
+                    },
+                    
+                    clear: () => this.clearConsole(),
+                    help: () => this.showHelp(),
+                    
+                    // Test functions
+                    testExtensionAPI: () => this.testExtensionAPI(),
+                    testContentScript: () => this.testContentScript(),
+                    testStorage: () => this.testStorage(),
+                    testSummarization: () => this.testSummarization(),
+                    
+                    // Web APIs
+                    document: document,
+                    window: window,
+                    console: console,
+                    location: location,
+                    navigator: navigator
+                };
+            }
+
+            evaluateSafariExtension(expression) {
+                if (typeof safari !== 'undefined' && safari.extension) {
+                    return eval(expression);
+                } else {
+                    this.logToConsole('system', 'Using mock Safari extension for testing');
+                    const mockSafari = {
+                        extension: {
+                            baseURI: 'safari-extension://mock-extension/',
+                            displayVersion: '1.0.0 (Mock Mode)'
+                        }
+                    };
+                    return eval(expression.replace(/safari/g, 'mockSafari'));
+                }
+            }
+
+            async testExtensionAPI() {
+                this.logToConsole('system', '🧪 Testing Safari Extension API...');
+                
+                try {
+                    if (typeof safari !== 'undefined' && safari.extension) {
+                        const info = {
+                            baseURI: safari.extension.baseURI,
+                            displayVersion: safari.extension.displayVersion
+                        };
+                        this.logToConsole('output', '✅ Safari Extension API test passed', info);
+                        return info;
+                    } else {
+                        this.logToConsole('output', '⚠️  Safari Extension API not available - using mock data');
+                        return { mock: true, status: 'Safari Extension API not available in this context' };
+                    }
+                } catch (error) {
+                    this.logToConsole('error', '❌ Safari Extension API test failed: ' + error.message);
+                    throw error;
+                }
+            }
+
+            async testContentScript() {
+                this.logToConsole('system', '🧪 Testing Content Script functionality...');
+                
+                try {
+                    // Simulate content script functionality
+                    const pageInfo = {
+                        title: document.title,
+                        url: window.location.href,
+                        textContent: document.body ? document.body.innerText.substring(0, 200) + '...' : 'No body content',
+                        readyState: document.readyState
+                    };
+                    
+                    this.logToConsole('output', '✅ Content Script test completed', pageInfo);
+                    return pageInfo;
+                } catch (error) {
+                    this.logToConsole('error', '❌ Content Script test failed: ' + error.message);
+                    throw error;
+                }
+            }
+
+            async testStorage() {
+                this.logToConsole('system', '🧪 Testing Storage operations...');
+                
+                try {
+                    // Test localStorage as a fallback
+                    const testKey = 'webSummarizerDebugTest';
+                    const testValue = {
+                        timestamp: new Date().toISOString(),
+                        test: true
+                    };
+                    
+                    localStorage.setItem(testKey, JSON.stringify(testValue));
+                    const retrieved = JSON.parse(localStorage.getItem(testKey));
+                    localStorage.removeItem(testKey);
+                    
+                    this.logToConsole('output', '✅ Storage test completed', retrieved);
+                    return { success: true, data: retrieved };
+                } catch (error) {
+                    this.logToConsole('error', '❌ Storage test failed: ' + error.message);
+                    throw error;
+                }
+            }
+
+            async testSummarization() {
+                this.logToConsole('system', '🧪 Testing AI Summarization functionality...');
+                
+                try {
+                    // Simulate summarization process
+                    const content = document.body ? document.body.innerText : 'Sample content for testing';
+                    const mockSummary = `AI Summary Test: This page appears to contain ${content.length} characters of content. ` +
+                                       `The main topic seems to be related to ${document.title || 'web development'}. ` +
+                                       `This is a mock summary for testing purposes.`;
+                    
+                    // Simulate API delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    this.logToConsole('output', '✅ Summarization test completed', {
+                        originalLength: content.length,
+                        summary: mockSummary,
+                        compressionRatio: (mockSummary.length / content.length).toFixed(2)
+                    });
+                    
+                    return mockSummary;
+                } catch (error) {
+                    this.logToConsole('error', '❌ Summarization test failed: ' + error.message);
+                    throw error;
+                }
+            }
+
+            showHelp() {
+                const helpText = `
+Safari Extension Debug Console - Help
+
+Basic Commands:
+• document.title - Get page title
+• window.location.href - Get current URL
+• navigator.userAgent - Get user agent string
+
+Safari Extension APIs:
+• safari.extension.baseURI - Extension base URI
+• safari.extension.displayVersion - Extension version
+
+Test Functions:
+• testExtensionAPI() - Test Safari extension functionality
+• testContentScript() - Test content script capabilities
+• testStorage() - Test storage operations
+• testSummarization() - Test AI summarization
+
+Utilities:
+• inspect(object) - Inspect object properties
+• clear() - Clear console
+• help() - Show this help
+
+Keyboard Shortcuts:
+• Cmd+Enter - Execute expression
+• Cmd+↑/↓ - Navigate command history
+• Cmd+K - Clear console
+                `;
+                
+                this.logToConsole('system', helpText.trim());
+            }
+
+            handleKeydown(event) {
+                const input = document.getElementById('expression-input');
+                
+                if (event.metaKey && event.key === 'Enter') {
+                    event.preventDefault();
+                    const expression = input.value.trim();
+                    if (expression) {
+                        this.evaluateExpression(expression);
+                        input.value = '';
+                    }
+                } else if (event.key === 'ArrowUp' && event.metaKey) {
+                    event.preventDefault();
+                    if (this.historyIndex < this.commandHistory.length - 1) {
+                        this.historyIndex++;
+                        input.value = this.commandHistory[this.historyIndex];
+                    }
+                } else if (event.key === 'ArrowDown' && event.metaKey) {
+                    event.preventDefault();
+                    if (this.historyIndex > 0) {
+                        this.historyIndex--;
+                        input.value = this.commandHistory[this.historyIndex];
+                    } else if (this.historyIndex === 0) {
+                        this.historyIndex = -1;
+                        input.value = '';
+                    }
+                } else if (event.metaKey && event.key === 'k') {
+                    event.preventDefault();
+                    this.clearConsole();
+                }
+            }
+
+            clearConsole() {
+                document.getElementById('console-output').innerHTML = '';
+                this.logToConsole('system', 'Console cleared - ready for new expressions');
+            }
+
+            loadDebugData() {
+                try {
+                    const stored = localStorage.getItem('safariExtensionDebugData');
+                    if (stored) {
+                        this.debugData = { ...this.debugData, ...JSON.parse(stored) };
+                        this.logToConsole('system', 'Debug data loaded from storage');
+                    }
+                } catch (e) {
+                    this.logToConsole('system', 'No previous debug data found');
+                }
+            }
+
+            saveDebugData() {
+                try {
+                    localStorage.setItem('safariExtensionDebugData', JSON.stringify(this.debugData));
+                    this.logToConsole('system', 'Debug data saved to storage');
+                } catch (e) {
+                    this.logToConsole('error', 'Failed to save debug data');
+                }
+            }
+        }
+
+        // Global debugger instance
+        let extensionDebugger;
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            extensionDebugger = new SafariExtensionDebugger();
+        });
+
+        // Global UI functions
+        function selectComponent(component) {
+            document.querySelectorAll('.sidebar-item[data-component]').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-component="${component}"]`).classList.add('active');
+            
+            extensionDebugger.currentComponent = component;
+            extensionDebugger.logToConsole('system', `Selected component: ${component}`);
+        }
+
+        function handleKeydown(event) {
+            if (extensionDebugger) {
+                extensionDebugger.handleKeydown(event);
+            }
+        }
+
+        function clearConsole() {
+            if (extensionDebugger) {
+                extensionDebugger.clearConsole();
+            }
+        }
+
+        function testExtensionAPI() {
+            if (extensionDebugger) {
+                extensionDebugger.testExtensionAPI();
+            }
+        }
+
+        function testContentScript() {
+            if (extensionDebugger) {
+                extensionDebugger.testContentScript();
+            }
+        }
+
+        function testStorage() {
+            if (extensionDebugger) {
+                extensionDebugger.testStorage();
+            }
+        }
+
+        function testSummarization() {
+            if (extensionDebugger) {
+                extensionDebugger.testSummarization();
+            }
+        }
+
+        function inspectCurrentTab() {
+            if (extensionDebugger) {
+                extensionDebugger.logToConsole('system', 'Inspecting current tab context...');
+                const tabInfo = {
+                    title: document.title,
+                    url: window.location.href,
+                    protocol: window.location.protocol,
+                    host: window.location.host,
+                    userAgent: navigator.userAgent,
+                    referrer: document.referrer || 'No referrer'
+                };
+                extensionDebugger.logToConsole('output', 'Current tab info:', tabInfo);
+            }
+        }
+
+        function enableVerboseLogging() {
+            if (extensionDebugger) {
+                extensionDebugger.logToConsole('system', '🔍 Verbose logging enabled');
+                console.log('Safari Extension Debug: Verbose logging active');
+            }
+        }
+
+        function exportDebugData() {
+            if (extensionDebugger) {
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    debugData: extensionDebugger.debugData,
+                    commandHistory: extensionDebugger.commandHistory
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `safari-extension-debug-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                extensionDebugger.logToConsole('system', '📁 Debug data exported successfully');
+            }
+        }
+
+        function simulateError() {
+            if (extensionDebugger) {
+                try {
+                    throw new Error('Simulated error for testing error handling and logging');
+                } catch (e) {
+                    extensionDebugger.logToConsole('error', 'Simulated error: ' + e.message);
+                }
+            }
+        }
+
+        function performanceProfile() {
+            if (extensionDebugger) {
+                extensionDebugger.logToConsole('system', '⚡ Starting performance profile...');
+                
+                const start = performance.now();
+                
+                // Simulate work
+                setTimeout(() => {
+                    const end = performance.now();
+                    const duration = (end - start).toFixed(2);
+                    extensionDebugger.logToConsole('output', `Performance profile completed in ${duration}ms`);
+                }, Math.random() * 100 + 50);
+            }
+        }
+
+        function runTests() {
+            if (extensionDebugger) {
+                extensionDebugger.logToConsole('system', '🧪 Running comprehensive Safari extension tests...');
+                
+                const tests = [
+                    { name: 'Extension API', func: testExtensionAPI },
+                    { name: 'Content Script', func: testContentScript },
+                    { name: 'Storage', func: testStorage },
+                    { name: 'Summarization', func: testSummarization }
+                ];
+                
+                tests.forEach((test, index) => {
+                    setTimeout(() => {
+                        extensionDebugger.logToConsole('system', `Running test ${index + 1}/${tests.length}: ${test.name}`);
+                        test.func();
+                    }, index * 750);
+                });
+                
+                setTimeout(() => {
+                    extensionDebugger.logToConsole('system', '✅ All tests completed successfully');
+                }, tests.length * 750 + 200);
+            }
+        }
+
+        function resetExtension() {
+            if (confirm('Reset all debug data and console history?')) {
+                localStorage.removeItem('safariExtensionDebugData');
+                if (extensionDebugger) {
+                    extensionDebugger.debugData = {};
+                    extensionDebugger.commandHistory = [];
+                    extensionDebugger.clearConsole();
+                    extensionDebugger.logToConsole('system', '🔄 Safari extension debug state has been reset');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

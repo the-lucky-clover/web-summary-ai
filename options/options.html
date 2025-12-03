@@ -43,16 +43,6 @@
           <h3>Default Summary Settings</h3>
           
           <div class="setting-item">
-            <label for="defaultLength">Default Summary Length:</label>
-            <select id="defaultLength">
-              <option value="short">Short (2-3 sentences)</option>
-              <option value="medium">Medium (1-2 paragraphs)</option>
-              <option value="detailed">Detailed (comprehensive)</option>
-            </select>
-            <p class="setting-description">Choose the default length for generated summaries</p>
-          </div>
-
-          <div class="setting-item">
             <label for="defaultLanguage">Default Language:</label>
             <select id="defaultLanguage">
               <option value="auto">Auto-detect</option>
@@ -64,38 +54,26 @@
               <option value="ja">Japanese</option>
               <option value="ko">Korean</option>
             </select>
-            <p class="setting-description">Language for summary responses</p>
+            <p class="setting-description">Language for summary responses (uses forensic-level prompt by default)</p>
           </div>
         </div>
 
         <div class="settings-group">
-          <h3>Custom Prompts</h3>
+          <h3>Custom Prompt</h3>
           
           <div class="setting-item">
             <label class="checkbox-label">
-              <input type="checkbox" id="useCustomPrompts">
+              <input type="checkbox" id="useCustomPrompt">
               <span class="checkmark"></span>
-              Use custom summarization prompts
+              Use custom summarization prompt
             </label>
-            <p class="setting-description">Override default prompts with your own custom instructions</p>
+            <p class="setting-description">Override the default forensic prompt with your own custom instructions</p>
           </div>
 
           <div class="setting-item" id="customPromptSettings" style="display: none;">
-            <label for="customPromptShort">Short Summary Prompt:</label>
-            <textarea id="customPromptShort" rows="3" placeholder="Enter your custom prompt for short summaries..."></textarea>
-            <p class="setting-description">Custom prompt for brief summaries (use {title} and {content} placeholders)</p>
-          </div>
-
-          <div class="setting-item" id="customPromptMediumContainer" style="display: none;">
-            <label for="customPromptMedium">Medium Summary Prompt:</label>
-            <textarea id="customPromptMedium" rows="4" placeholder="Enter your custom prompt for medium summaries..."></textarea>
-            <p class="setting-description">Custom prompt for medium-length summaries</p>
-          </div>
-
-          <div class="setting-item" id="customPromptDetailedContainer" style="display: none;">
-            <label for="customPromptDetailed">Detailed Summary Prompt:</label>
-            <textarea id="customPromptDetailed" rows="5" placeholder="Enter your custom prompt for detailed summaries..."></textarea>
-            <p class="setting-description">Custom prompt for comprehensive summaries</p>
+            <label for="customPrompt">Custom Summary Prompt:</label>
+            <textarea id="customPrompt" rows="10" placeholder="Enter your custom prompt... Use placeholders: {{CONTENT}}, {{URL}}, {{TITLE}}, {{SELECTED_LANGUAGE}}"></textarea>
+            <p class="setting-description">Your custom prompt will be used instead of the default forensic extraction prompt. Leave blank to use the built-in ultra-detailed forensic prompt.</p>
           </div>
 
           <div class="setting-item" id="promptTemplatesContainer" style="display: none;">
